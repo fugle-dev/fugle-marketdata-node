@@ -13,16 +13,12 @@ export abstract class RestClient {
   constructor(protected readonly options: RestClientOptions) {}
 
   protected request = async (endpoint: string, params?: Record<string, any>) => {
-    endpoint = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+    const url = queryString.stringifyUrl({ url: `${this.options.baseUrl}/${endpoint}`, query: params });
 
-    const url = queryString.stringifyUrl({
-      url: this.options.baseUrl + endpoint,
-      query: params,
-    });
-
-    const headers: Record<string, string> = {};
-    if (this.options.apiKey) headers['X-API-KEY'] = this.options.apiKey;
-    if (this.options.bearerToken) headers['Authorization'] = `Bearer ${this.options.bearerToken}`;
+    const headers = Object.assign({},
+      this.options.apiKey && { 'X-API-KEY': this.options.apiKey },
+      this.options.bearerToken && { Authorization: `Bearer ${this.options.bearerToken}` },
+    ) as Record<string, string>;
 
     return fetch(url, { headers }).then(res => res.json());
   }
