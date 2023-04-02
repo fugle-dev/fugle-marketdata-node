@@ -1,5 +1,6 @@
 import { RestClient } from './client';
 import { RestStockClient } from './stock/client';
+import { RestFutOptClient } from './futopt/client';
 import { ClientFactory } from '../client-factory';
 import { FUGLE_MARKETDATA_API_REST_BASE_URL, FUGLE_MARKETDATA_API_VERSION } from '../constants';
 
@@ -8,6 +9,10 @@ export class RestClientFactory extends ClientFactory {
 
   get stock() {
     return this.getClient('stock');
+  }
+
+  get futopt() {
+    return this.getClient('futopt');
   }
 
   private getClient(type: 'stock' | 'futopt') {
@@ -19,6 +24,8 @@ export class RestClientFactory extends ClientFactory {
       /* istanbul ignore else */
       if (type === 'stock') {
         client = new RestStockClient({ ...this.options, baseUrl });
+      } else if (type === 'futopt') {
+        client = new RestFutOptClient({ ...this.options, baseUrl });
       } else {
         throw new TypeError('invalid client type');
       }
