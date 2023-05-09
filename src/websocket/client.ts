@@ -38,6 +38,10 @@ export class WebSocketClient extends events.EventEmitter {
     this.send({ event: 'subscribe', data: params });
   }
 
+  public unsubscribe(params: { id?: string, ids?: string[] }) {
+    this.send({ event: 'unsubscribe', data: params });
+  }
+
   private authenticate() {
     if (this.options.apiKey) {
       this.send({ event: 'auth', data: { apikey: this.options.apiKey } });

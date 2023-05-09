@@ -172,6 +172,22 @@ describe('WebSocketClient', () => {
         ]);
       });
     });
+
+    describe('.unsubscribe()', () => {
+      it('should send unsubscribe event with data', async () => {
+        const client = new WebSocketClient({ apiKey: 'api-key' });
+        const stock = client.stock;
+        stock.connect()
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+        stock.unsubscribe({ id: '1234567890' });
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'unsubscribe', data: { id: '1234567890' } }));
+        expect(server).toHaveReceivedMessages([
+          JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
+          JSON.stringify({ event: 'unsubscribe', data: { id: '1234567890' } }),
+        ]);
+      });
+    });
   });
 
   describe('.futopt', () => {
@@ -311,6 +327,22 @@ describe('WebSocketClient', () => {
         expect(server).toHaveReceivedMessages([
           JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
           JSON.stringify({ event: 'subscribe', data: { channel: 'trades', symbol: 'TXFA3' } }),
+        ]);
+      });
+    });
+
+    describe('.unsubscribe()', () => {
+      it('should send unsubscribe event with data', async () => {
+        const client = new WebSocketClient({ apiKey: 'api-key' });
+        const futopt = client.futopt;
+        futopt.connect()
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+        futopt.unsubscribe({ id: '1234567890' });
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'unsubscribe', data: { id: '1234567890' } }));
+        expect(server).toHaveReceivedMessages([
+          JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
+          JSON.stringify({ event: 'unsubscribe', data: { id: '1234567890' } }),
         ]);
       });
     });
