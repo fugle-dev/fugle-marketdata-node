@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.0.0-beta.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0-beta.0...v1.0.0-beta.1) (2023-05-09)
+
+
+### Features
+
+* add unsubscribe method for WebSocket client ([3b13768](https://github.com/fugle-dev/fugle-marketdata-node/commit/3b13768825998ba9696c131db41a92e55f6b6bf9))
+
 # 1.0.0-beta.0 (2023-04-02)
 
 
