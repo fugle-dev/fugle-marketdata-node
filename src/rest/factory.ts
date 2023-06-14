@@ -8,11 +8,11 @@ export class RestClientFactory extends ClientFactory {
   private readonly clients = new Map<string, RestClient>();
 
   get stock() {
-    return this.getClient('stock');
+    return this.getClient('stock') as RestStockClient;
   }
 
   get futopt() {
-    return this.getClient('futopt');
+    return this.getClient('futopt') as RestFutOptClient;
   }
 
   private getClient(type: 'stock' | 'futopt') {

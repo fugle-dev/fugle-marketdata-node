@@ -8,11 +8,11 @@ export class WebSocketClientFactory extends ClientFactory {
   private readonly clients = new Map<string, WebSocketClient>();
 
   get stock() {
-    return this.getClient('stock');
+    return this.getClient('stock') as WebSocketStockClient;
   }
 
   get futopt() {
-    return this.getClient('futopt');
+    return this.getClient('futopt') as WebSocketFutOptClient;
   }
 
   private getClient(type: 'stock' | 'futopt') {
