@@ -42,6 +42,10 @@ export class WebSocketClient extends events.EventEmitter {
     this.send({ event: 'unsubscribe', data: params });
   }
 
+  public ping(params: { state?: any }) {
+    this.send({ event: 'ping', data: params });
+  }
+
   private authenticate() {
     if (this.options.apiKey) {
       this.send({ event: 'auth', data: { apikey: this.options.apiKey } });
