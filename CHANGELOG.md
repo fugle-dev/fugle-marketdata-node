@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.0.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0-beta.1...v1.0.0) (2023-06-14)
+
+
+### Features
+
+* add ping method for WebSocket client ([32902f7](https://github.com/fugle-dev/fugle-marketdata-node/commit/32902f7c679f262fd67053b59e088c05ad0db9c7))
+
 # [1.0.0-beta.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0-beta.0...v1.0.0-beta.1) (2023-05-09)
 
 
