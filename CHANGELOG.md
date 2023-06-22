@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0...v1.0.1) (2023-06-22)
+
+
+### Bug Fixes
+
+* update stock intraday api response fields ([1cdfb90](https://github.com/fugle-dev/fugle-marketdata-node/commit/1cdfb905e52b576e725c0272275a7e6e81d3a345))
+
 # [1.0.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0-beta.1...v1.0.0) (2023-06-14)
 
 
