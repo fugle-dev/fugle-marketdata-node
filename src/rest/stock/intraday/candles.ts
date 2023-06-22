@@ -3,13 +3,16 @@ import { RestClientRequest } from '../../client';
 export interface RestStockIntradayCandlesParams {
   symbol: string;
   type?: 'oddlot';
+  timeframe?: '1' | '5' | '10' | '15' | '30' | '60';
 }
 
 export interface RestStockIntradayCandlesResponse {
-  symbol: string;
+  date: string;
   type: string;
   exchange: string;
   market: string;
+  symbol: string;
+  timeframe: string;
   data: Array<{
     open: number;
     high: number;

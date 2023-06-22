@@ -11,6 +11,7 @@ export interface RestStockIntradayQuoteResponse {
   exchange: string;
   market: string;
   symbol: string;
+  name: string;
   openPrice: number;
   openTime: number;
   highPrice: number;
@@ -20,11 +21,11 @@ export interface RestStockIntradayQuoteResponse {
   closePrice: number;
   closeTime: number;
   lastPrice: number;
+  lastSize: number;
   avgPrice: number;
   change: number;
   changePercent: number;
   amplitude: number;
-  lastSize: number;
   bids: Array<{
     price: number;
     size: number;
@@ -39,12 +40,7 @@ export interface RestStockIntradayQuoteResponse {
     tradeVolumeAtBid: number;
     tradeVolumeAtAsk: number;
     transaction: number;
-  };
-  priceLimits: {
-    price: number;
-    bid: number;
-    ask: number;
-    curb: number;
+    time: number;
   };
   lastTrade: {
     bid: number;
@@ -64,6 +60,14 @@ export interface RestStockIntradayQuoteResponse {
     isHalted: boolean;
     time: number;
   };
+  isLimitDownPrice: boolean,
+  isLimitUpPrice: boolean,
+  isLimitDownBid: boolean,
+  isLimitUpBid: boolean,
+  isLimitDownAsk: boolean,
+  isLimitUpAsk: boolean,
+  isLimitDownHalt: boolean,
+  isLimitUpHalt: boolean,
   isTrial: boolean;
   isDelayedOpen: boolean;
   isDelayedClose: boolean;
