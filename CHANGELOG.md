@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.1...v1.0.2) (2023-06-24)
+
+
+### Bug Fixes
+
+* snapshot response interface doesn't match the response ([d5f45c3](https://github.com/fugle-dev/fugle-marketdata-node/commit/d5f45c39d9f487f53659be4fb5cb804bfa18d46b))
+
 ## [1.0.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.0...v1.0.1) (2023-06-22)
 
 
