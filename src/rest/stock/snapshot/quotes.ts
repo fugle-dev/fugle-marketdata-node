@@ -10,16 +10,18 @@ export interface RestStockSnapshotQuotesResponse {
   time: string,
   market: string,
   data: Array<{
+    type: string,
     symbol: string,
-    open: number;
-    high: number;
-    low: number;
-    close: number;
+    name:string
+    openPrice: number;
+    highPrice: number;
+    lowPrice: number;
+    closePrice: number;
     change: number;
     changePercent: number;
     tradeVolume: number;
     tradeValue: number;
-    timestamp: number;
+    lastUpdated: number;
   }>;
 }
 
