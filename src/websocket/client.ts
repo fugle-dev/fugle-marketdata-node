@@ -20,7 +20,7 @@ export class WebSocketClient extends events.EventEmitter {
     this.socket.onopen = () => this.emit(CONNECT_EVENT);
     this.socket.onmessage = event => this.emit(MESSAGE_EVENT, event.data);
     this.socket.onerror = event => this.emit(ERROR_EVENT, event.error);
-    this.socket.onclose = () => this.emit(DISCONNECT_EVENT);
+    this.socket.onclose = event => this.emit(DISCONNECT_EVENT, event);
     this.on(CONNECT_EVENT, () => this.authenticate());
     this.on(MESSAGE_EVENT, message => this.handleMessage(message));
 
