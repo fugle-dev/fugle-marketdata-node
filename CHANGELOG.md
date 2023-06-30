@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.2...v1.0.3) (2023-06-30)
+
+
+### Bug Fixes
+
+* expose WebSocket close event ([#2](https://github.com/fugle-dev/fugle-marketdata-node/issues/2)) ([f4ae32a](https://github.com/fugle-dev/fugle-marketdata-node/commit/f4ae32a231439948336a49e37c929254a5322fb2))
+
 ## [1.0.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.1...v1.0.2) (2023-06-24)
 
 
