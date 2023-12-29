@@ -5,26 +5,32 @@ export interface RestFutOptIntradayProductsParams {
   exchange?: 'TAIFEX';
   session?: 'REGULAR' | 'AFTERHOURS';
   contractType?: 'I' | 'R' | 'B' | 'C' | 'S' | 'E';
+  status?: 'N' | 'P' | 'U';
 }
 
 export interface RestFutOptIntradayProductsResponse {
   date: string;
   type: string;
-  exchange: string;
   session: string;
   contractType: string;
+  status: string;
   data: Array<{
     type: string;
     exchange: string;
     symbol: string;
     name: string;
-    referencePrice: number;
+    underlyingSymbol: string;
     contractType: string;
+    contractSize: number;
+    statusCode: string;
+    tradingCurrency: string;
+    quoteAcceptable: true,
     startDate: string;
-    endDate: string;
-    flowGroup: number;
-    settlementDate: string;
-    isDynamicBanding: boolean;
+    canBlockTrade: true,
+    expiryType: string;
+    underlyingType: string;
+    marketCloseGroup: number;
+    endSession: number;
   }>;
 }
 
