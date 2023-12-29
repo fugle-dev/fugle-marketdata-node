@@ -1,7 +1,7 @@
 import { WebSocketClient } from '../client';
 
 export interface WebSocketFutOptSubscribeParams {
-  channel: 'trades' | 'books' | 'candles';
+  channel: 'trades' | 'books' | 'candles' | 'aggregates';
   symbol?: string;
   symbols?: string[];
   afterHours?: boolean;
