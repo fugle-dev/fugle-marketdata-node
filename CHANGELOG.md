@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.3...v1.0.4) (2024-02-16)
+
+
+### Bug Fixes
+
+* correct the trading halt status property name ([af13910](https://github.com/fugle-dev/fugle-marketdata-node/commit/af139108f59254031f5e2092820262436a2c7b94))
+
 ## [1.0.3](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.2...v1.0.3) (2023-06-30)
 
 
