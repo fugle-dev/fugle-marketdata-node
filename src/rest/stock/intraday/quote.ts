@@ -56,7 +56,7 @@ export interface RestStockIntradayQuoteResponse {
     size: number;
     time: number;
   };
-  opHaltStatus: {
+  tradingHalt: {
     isHalted: boolean;
     time: number;
   };
