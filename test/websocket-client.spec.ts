@@ -204,6 +204,22 @@ describe('WebSocketClient', () => {
         ]);
       });
     });
+
+    describe('.subscriptions()', () => {
+      it('should send subscriptions event', async () => {
+        const client = new WebSocketClient({ apiKey: 'api-key' });
+        const stock = client.stock;
+        stock.connect()
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+        stock.subscriptions();
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'subscriptions' }));
+        expect(server).toHaveReceivedMessages([
+          JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
+          JSON.stringify({ event: 'subscriptions' }),
+        ]);
+      });
+    });
   });
 
   describe('.futopt', () => {
@@ -375,6 +391,22 @@ describe('WebSocketClient', () => {
         expect(server).toHaveReceivedMessages([
           JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
           JSON.stringify({ event: 'ping', data: { state: 'foo-bar' } }),
+        ]);
+      });
+    });
+
+    describe('.subscriptions()', () => {
+      it('should send subscriptions event', async () => {
+        const client = new WebSocketClient({ apiKey: 'api-key' });
+        const futopt = client.futopt;
+        futopt.connect()
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+        futopt.subscriptions();
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'subscriptions' }));
+        expect(server).toHaveReceivedMessages([
+          JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
+          JSON.stringify({ event: 'subscriptions' }),
         ]);
       });
     });
