@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.1.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.4...v1.1.0) (2024-03-01)
+
+
+### Features
+
+* add subscriptions method for WebSocket client ([5c28313](https://github.com/fugle-dev/fugle-marketdata-node/commit/5c28313da0d539ad9e7dd1e23ec2d83770fd6391))
+
 ## [1.0.4](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.3...v1.0.4) (2024-02-16)
 
 
