@@ -337,30 +337,13 @@ describe('RestClient', () => {
         const client = new RestClient({ apiKey: 'api-key' });
         const futopt = client.futopt as RestFutOptClient;
         expect(futopt.intraday).toBeDefined();
-        expect(futopt.intraday).toHaveProperty('contracts');
         expect(futopt.intraday).toHaveProperty('products');
-      });
-
-      describe('.contracts()', () => {
-        it('should request with api key', async () => {
-          const client = new RestClient({ apiKey: 'api-key' });
-          const futopt = client.futopt as RestFutOptClient;
-          await futopt.intraday.contracts({ type: 'FUTURE' });
-          expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/contracts?type=FUTURE',
-            { headers: { 'X-API-KEY': 'api-key' } },
-          );
-        });
-
-        it('should request with bearer token', async () => {
-          const client = new RestClient({ bearerToken: 'bearer-token' });
-          const futopt = client.futopt as RestFutOptClient;
-          await futopt.intraday.contracts({ type: 'FUTURE' });
-          expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/contracts?type=FUTURE',
-            { headers: { 'Authorization': 'Bearer bearer-token' } },
-          );
-        });
+        expect(futopt.intraday).toHaveProperty('tickers');
+        expect(futopt.intraday).toHaveProperty('ticker');
+        expect(futopt.intraday).toHaveProperty('quote');
+        expect(futopt.intraday).toHaveProperty('candles');
+        expect(futopt.intraday).toHaveProperty('trades');
+        expect(futopt.intraday).toHaveProperty('volumes');
       });
 
       describe('.products()', () => {
@@ -384,6 +367,194 @@ describe('RestClient', () => {
           );
         });
       });
+
+      describe('.tickers()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.tickers({ type: 'FUTURE' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/tickers?type=FUTURE',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.tickers({ type: 'FUTURE' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/tickers?type=FUTURE',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+
+      describe('.ticker()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.ticker({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/ticker/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.ticker({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/ticker/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.quote()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.quote({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/quote/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.quote({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/quote/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.candles()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.candles({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/candles/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.candles({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/candles/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.trades()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.trades({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/trades/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.trades({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/trades/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.volumes()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.volumes({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/volumes/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.volumes({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/volumes/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
     });
+
+    describe('.historical', () => {
+      it('should contain futopt historical api endpoints', () => {
+        const client = new RestClient({ apiKey: 'api-key' });
+        const futopt = client.futopt as RestFutOptClient;
+        expect(futopt.historical).toBeDefined();
+        expect(futopt.historical).toHaveProperty('candles');
+        expect(futopt.historical).toHaveProperty('daily');
+      });
+
+      describe('.candles()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.candles({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.candles({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.daily()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.daily({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXFH4',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.daily({ symbol: 'TXFH4' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXFH4',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+    });
+
   });
 });
