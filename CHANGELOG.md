@@ -1,5 +1,13 @@
 # Changelog
 
+# [1.2.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.1.0...v1.2.0) (2024-07-30)
+
+
+### Features
+
+* add REST endpoints for Futures & Options API ([df5d392](https://github.com/fugle-dev/fugle-marketdata-node/commit/df5d3927f1b03cabe9d8bad6b7c8aa20710a63f6))
+* add support for retrieving historical data for Futures and Options ([#3](https://github.com/fugle-dev/fugle-marketdata-node/issues/3)) ([7b92c67](https://github.com/fugle-dev/fugle-marketdata-node/commit/7b92c67eb97bd655266f23d907f670ea1f0792c4))
+
 # [1.1.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.0.4...v1.1.0) (2024-03-01)
 
 
