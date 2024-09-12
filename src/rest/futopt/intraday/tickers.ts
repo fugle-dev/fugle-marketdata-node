@@ -19,9 +19,9 @@ export interface RestFutOptIntradayTickersResponse {
     contractType: string;
     symbol: string;
     name: string;
-    referencePrice: number;
     isDynamicBanding: boolean;
-    flowGroup: number;
+    openTime: string;
+    closeTime: string;
     startDate: string;
     endDate: string;
     settlementDate: string;
