@@ -10,6 +10,11 @@ import { RestStockHistoricalStatsParams, stats } from './historical/stats';
 import { RestStockSnapshotQuotesParams, quotes } from './snapshot/quotes';
 import { RestStockSnapshotMoversParams, movers } from './snapshot/movers';
 import { RestStockSnapshotActivesParams, actives } from './snapshot/actives';
+import { RestStockTechnicalSmaParams, sma } from './technical/sma';
+import { RestStockTechnicalRsiParams, rsi } from './technical/rsi';
+import { RestStockTechnicalKdjParams, kdj } from './technical/kdj';
+import { RestStockTechnicalMacdParams, macd } from './technical/macd';
+import { RestStockTechnicalBbParams, bb } from './technical/bb';
 
 export class RestStockClient extends RestClient {
   get intraday() {
@@ -38,6 +43,17 @@ export class RestStockClient extends RestClient {
       quotes: (params: RestStockSnapshotQuotesParams) => quotes(request, params),
       movers: (params: RestStockSnapshotMoversParams) => movers(request, params),
       actives: (params: RestStockSnapshotActivesParams) => actives(request, params),
+    };
+  }
+
+  get technical() {
+    const request = this.request;
+    return {
+      sma: (params: RestStockTechnicalSmaParams) => sma(request, params),
+      rsi: (params: RestStockTechnicalRsiParams) => rsi(request, params),
+      kdj: (params: RestStockTechnicalKdjParams) => kdj(request, params),
+      macd: (params: RestStockTechnicalMacdParams) => macd(request, params),
+      bb: (params: RestStockTechnicalBbParams) => bb(request, params),
     };
   }
 }
