@@ -316,6 +316,129 @@ describe('RestClient', () => {
         });
       });
     });
+
+    describe('.technical', () => {
+      it('should contain stock technical api endpoints', () => {
+        const client = new RestClient({ apiKey: 'api-key' });
+        const stock = client.stock as RestStockClient;
+        expect(stock.technical).toBeDefined();
+        expect(stock.technical).toHaveProperty('sma');
+        expect(stock.technical).toHaveProperty('rsi');
+        expect(stock.technical).toHaveProperty('kdj');
+        expect(stock.technical).toHaveProperty('macd');
+        expect(stock.technical).toHaveProperty('bb');
+      });
+
+      describe('.sma()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.sma({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 5 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/sma/2330?from=2024-01-01&period=5&timeframe=D&to=2024-12-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.sma({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 5 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/sma/2330?from=2024-01-01&period=5&timeframe=D&to=2024-12-31',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.rsi()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.rsi({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 6 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/rsi/2330?from=2024-01-01&period=6&timeframe=D&to=2024-12-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.rsi({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 6 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/rsi/2330?from=2024-01-01&period=6&timeframe=D&to=2024-12-31',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.kdj()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.kdj({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', rPeriod: 14, kPeriod: 9, dPeriod: 3 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/kdj/2330?dPeriod=3&from=2024-01-01&kPeriod=9&rPeriod=14&timeframe=D&to=2024-12-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.kdj({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', rPeriod: 14, kPeriod: 9, dPeriod: 3 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/kdj/2330?dPeriod=3&from=2024-01-01&kPeriod=9&rPeriod=14&timeframe=D&to=2024-12-31',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.macd()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.macd({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', fast: 12, slow: 26, signal: 9 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/macd/2330?fast=12&from=2024-01-01&signal=9&slow=26&timeframe=D&to=2024-12-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.macd({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', fast: 12, slow: 26, signal: 9 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/macd/2330?fast=12&from=2024-01-01&signal=9&slow=26&timeframe=D&to=2024-12-31',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+
+      describe('.bb()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.bb({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 20 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/bb/2330?from=2024-01-01&period=20&timeframe=D&to=2024-12-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.technical.bb({ symbol: '2330', from: '2024-01-01', to: '2024-12-31', timeframe: 'D', period: 20 });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/technical/bb/2330?from=2024-01-01&period=20&timeframe=D&to=2024-12-31',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+      });
+    });
   });
 
   describe('.futopt', () => {
