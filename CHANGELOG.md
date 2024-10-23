@@ -1,5 +1,13 @@
 # Changelog
 
+# [1.3.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.2.0...v1.3.0) (2024-10-23)
+
+
+### Features
+
+* add REST endpoints for stock technical API ([#4](https://github.com/fugle-dev/fugle-marketdata-node/issues/4)) ([c5a51a8](https://github.com/fugle-dev/fugle-marketdata-node/commit/c5a51a8cd96a7aa069b11326231f4711484e48fc))
+* add sort parameter to enable sorting for stock historical candles endpoint ([82225e7](https://github.com/fugle-dev/fugle-marketdata-node/commit/82225e7f9a414f1a6bf66e4cad03a2d675724b3b))
+
 # [1.2.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.1.0...v1.2.0) (2024-07-30)
 
 
