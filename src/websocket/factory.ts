@@ -20,7 +20,7 @@ export class WebSocketClientFactory extends ClientFactory {
 
     if (!client) {
       const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
-      const url = `${baseUrl}/${type}/streaming`;
+      const url = `${baseUrl.replace(/\/+$/, '')}/${type}/streaming`;
 
       /* istanbul ignore else */
       if (type === 'stock') {

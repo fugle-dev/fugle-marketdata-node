@@ -20,7 +20,7 @@ export class RestClientFactory extends ClientFactory {
 
     if (!client) {
       const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_REST_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
-      const url = `${baseUrl}/${type}`;
+      const url = `${baseUrl.replace(/\/+$/, '')}/${type}`;
 
       /* istanbul ignore else */
       if (type === 'stock') {

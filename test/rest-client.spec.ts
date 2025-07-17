@@ -41,6 +41,11 @@ describe('RestClient', () => {
     it('should throw an error if all three tokens are specified', () => {
       expect(() => new RestClient({ apiKey: 'api-key', bearerToken: 'bearer-token', sdkToken: 'sdk-token' })).toThrowError();
     });
+
+    it('should create a RestClient instance with custom baseUrl', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com/v2.0' });
+      expect(client).toBeInstanceOf(RestClient);
+    });
   });
 
   describe('.stock', () => {
@@ -55,6 +60,22 @@ describe('RestClient', () => {
       const stock1 = client.stock;
       const stock2 = client.stock;
       expect(stock1).toBe(stock2);
+    });
+
+    it('should use custom baseUrl for stock client', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com/v2.0' });
+      const stock = client.stock;
+      expect(stock).toBeInstanceOf(RestStockClient);
+      // @ts-ignore - accessing private property for testing
+      expect(stock.options.baseUrl).toBe('https://custom-api.example.com/v2.0/stock');
+    });
+
+    it('should use custom baseUrl for futopt client', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com/v2.0' });
+      const futopt = client.futopt;
+      expect(futopt).toBeInstanceOf(RestFutOptClient);
+      // @ts-ignore - accessing private property for testing
+      expect(futopt.options.baseUrl).toBe('https://custom-api.example.com/v2.0/futopt');
     });
 
     describe('.intraday', () => {
@@ -98,6 +119,16 @@ describe('RestClient', () => {
           expect(fetch).toBeCalledWith(
             'https://api.fugle.tw/marketdata/v1.0/stock/intraday/tickers?type=INDEX',
             { headers: { 'X-SDK-TOKEN': 'sdk-token' } },
+          );
+        });
+
+        it('should request with custom baseUrl', async () => {
+          const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com/v2.0' });
+          const stock = client.stock as RestStockClient;
+          await stock.intraday.tickers({ type: 'INDEX' });
+          expect(fetch).toBeCalledWith(
+            'https://custom-api.example.com/v2.0/stock/intraday/tickers?type=INDEX',
+            { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
       });
@@ -716,5 +747,39 @@ describe('RestClient', () => {
       });
     });
 
+  });
+
+  describe('URL normalization', () => {
+    it('should handle baseUrl without trailing slash', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/v1' });
+      const stock = client.stock;
+      // @ts-ignore - accessing private property for testing
+      expect(stock.options.baseUrl).toBe('https://api.example.com/v1/stock');
+    });
+
+    it('should handle baseUrl with single trailing slash', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/v1/' });
+      const stock = client.stock;
+      // @ts-ignore - accessing private property for testing
+      expect(stock.options.baseUrl).toBe('https://api.example.com/v1/stock');
+    });
+
+    it('should handle baseUrl with multiple trailing slashes', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/v1///' });
+      const stock = client.stock;
+      // @ts-ignore - accessing private property for testing
+      expect(stock.options.baseUrl).toBe('https://api.example.com/v1/stock');
+    });
+
+    it('should handle baseUrl with complex path and trailing slash', () => {
+      const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/api/v2/' });
+      const stock = client.stock;
+      // @ts-ignore - accessing private property for testing
+      expect(stock.options.baseUrl).toBe('https://api.example.com/api/v2/stock');
+      
+      const futopt = client.futopt;
+      // @ts-ignore - accessing private property for testing
+      expect(futopt.options.baseUrl).toBe('https://api.example.com/api/v2/futopt');
+    });
   });
 });
