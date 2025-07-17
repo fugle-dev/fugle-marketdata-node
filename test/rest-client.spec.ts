@@ -17,12 +17,29 @@ describe('RestClient', () => {
       expect(client).toBeInstanceOf(RestClient);
     });
 
+    it('should create a RestClient instance with sdkToken option', () => {
+      const client = new RestClient({ sdkToken: 'sdk-token' });
+      expect(client).toBeInstanceOf(RestClient);
+    });
+
     it('should throw an error if no options are specified', () => {
       expect(() => new RestClient({})).toThrowError();
     });
 
     it('should throw an error if both apiKey and bearerToken are specified', () => {
       expect(() => new RestClient({ apiKey: 'api-key', bearerToken: 'bearer-token' })).toThrowError();
+    });
+
+    it('should throw an error if both apiKey and sdkToken are specified', () => {
+      expect(() => new RestClient({ apiKey: 'api-key', sdkToken: 'sdk-token' })).toThrowError();
+    });
+
+    it('should throw an error if both bearerToken and sdkToken are specified', () => {
+      expect(() => new RestClient({ bearerToken: 'bearer-token', sdkToken: 'sdk-token' })).toThrowError();
+    });
+
+    it('should throw an error if all three tokens are specified', () => {
+      expect(() => new RestClient({ apiKey: 'api-key', bearerToken: 'bearer-token', sdkToken: 'sdk-token' })).toThrowError();
     });
   });
 
@@ -73,6 +90,16 @@ describe('RestClient', () => {
             { headers: { 'Authorization': 'Bearer bearer-token' } },
           );
         });
+
+        it('should request with sdk token', async () => {
+          const client = new RestClient({ sdkToken: 'sdk-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.intraday.tickers({ type: 'INDEX' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/intraday/tickers?type=INDEX',
+            { headers: { 'X-SDK-TOKEN': 'sdk-token' } },
+          );
+        });
       });
 
       describe('.ticker()', () => {
@@ -93,6 +120,16 @@ describe('RestClient', () => {
           expect(fetch).toBeCalledWith(
             'https://api.fugle.tw/marketdata/v1.0/stock/intraday/ticker/2330',
             { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with sdk token', async () => {
+          const client = new RestClient({ sdkToken: 'sdk-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.intraday.ticker({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/intraday/ticker/2330',
+            { headers: { 'X-SDK-TOKEN': 'sdk-token' } },
           );
         });
       });

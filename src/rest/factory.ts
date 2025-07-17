@@ -19,13 +19,14 @@ export class RestClientFactory extends ClientFactory {
     let client = this.clients.get(type);
 
     if (!client) {
-      const baseUrl = `${FUGLE_MARKETDATA_API_REST_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}/${type}`;
+      const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_REST_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
+      const url = `${baseUrl}/${type}`;
 
       /* istanbul ignore else */
       if (type === 'stock') {
-        client = new RestStockClient({ ...this.options, baseUrl });
+        client = new RestStockClient({ ...this.options, baseUrl: url });
       } else if (type === 'futopt') {
-        client = new RestFutOptClient({ ...this.options, baseUrl });
+        client = new RestFutOptClient({ ...this.options, baseUrl: url });
       } else {
         throw new TypeError('invalid client type');
       }

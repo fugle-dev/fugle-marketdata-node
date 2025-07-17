@@ -23,12 +23,29 @@ describe('WebSocketClient', () => {
       expect(client).toBeInstanceOf(WebSocketClient);
     });
 
+    it('should create a WebSocketClient instance with sdkToken option', () => {
+      const client = new WebSocketClient({ sdkToken: 'sdk-token' });
+      expect(client).toBeInstanceOf(WebSocketClient);
+    });
+
     it('should throw an error if no options are specified', () => {
       expect(() => new WebSocketClient({})).toThrowError();
     });
 
     it('should throw an error if both apiKey and bearerToken are specified', () => {
       expect(() => new WebSocketClient({ apiKey: 'api-key', bearerToken: 'bearer-token' })).toThrowError();
+    });
+
+    it('should throw an error if both apiKey and sdkToken are specified', () => {
+      expect(() => new WebSocketClient({ apiKey: 'api-key', sdkToken: 'sdk-token' })).toThrowError();
+    });
+
+    it('should throw an error if both bearerToken and sdkToken are specified', () => {
+      expect(() => new WebSocketClient({ bearerToken: 'bearer-token', sdkToken: 'sdk-token' })).toThrowError();
+    });
+
+    it('should throw an error if all three tokens are specified', () => {
+      expect(() => new WebSocketClient({ apiKey: 'api-key', bearerToken: 'bearer-token', sdkToken: 'sdk-token' })).toThrowError();
     });
   });
 
@@ -112,6 +129,15 @@ describe('WebSocketClient', () => {
         await server.connected;
         await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { token: 'bearer-token' } }));
         expect(server).toHaveReceivedMessages([JSON.stringify({ event: 'auth', data: { token: 'bearer-token' } })]);
+      });
+
+      it('should send authenticate event with sdkToken when connected', async () => {
+        const client = new WebSocketClient({ sdkToken: 'sdk-token' });
+        const stock = client.stock;
+        stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { sdkToken: 'sdk-token' } }));
+        expect(server).toHaveReceivedMessages([JSON.stringify({ event: 'auth', data: { sdkToken: 'sdk-token' } })]);
       });
 
       it('should resolve the Promise when authenticated', async () => {

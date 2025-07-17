@@ -19,7 +19,8 @@ export class WebSocketClientFactory extends ClientFactory {
     let client = this.clients.get(type);
 
     if (!client) {
-      const url = `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}/${type}/streaming`;
+      const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
+      const url = `${baseUrl}/${type}/streaming`;
 
       /* istanbul ignore else */
       if (type === 'stock') {

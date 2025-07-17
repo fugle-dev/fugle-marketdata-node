@@ -7,6 +7,7 @@ export interface RestClientOptions {
   baseUrl: string;
   apiKey?: string;
   bearerToken?: string;
+  sdkToken?: string;
 }
 
 export abstract class RestClient {
@@ -18,6 +19,7 @@ export abstract class RestClient {
     const headers = Object.assign({},
       this.options.apiKey && { 'X-API-KEY': this.options.apiKey },
       this.options.bearerToken && { Authorization: `Bearer ${this.options.bearerToken}` },
+      this.options.sdkToken && { 'X-SDK-TOKEN': this.options.sdkToken },
     ) as Record<string, string>;
 
     return fetch(url, { headers }).then(res => res.json());
