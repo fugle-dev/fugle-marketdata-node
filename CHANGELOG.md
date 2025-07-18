@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.3.0...v1.3.1) (2025-07-18)
+
+
+### Bug Fixes
+
+* resolve trailing slash issues in URL construction ([73fec19](https://github.com/fugle-dev/fugle-marketdata-node/commit/73fec194a0f6488563a9307700b143337c286391))
+
+
+### Features
+
+* add SDK token authentication and custom base ([fa4731f](https://github.com/fugle-dev/fugle-marketdata-node/commit/fa4731f58e214b36c0198a38285c037e0d737e5f))
+
 # [1.3.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.2.0...v1.3.0) (2024-10-23)
 
 
