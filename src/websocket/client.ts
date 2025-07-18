@@ -6,6 +6,7 @@ export interface WebSocketClientOptions {
   url: string;
   apiKey?: string;
   bearerToken?: string;
+  sdkToken?: string;
 }
 
 export class WebSocketClient extends events.EventEmitter {
@@ -56,6 +57,9 @@ export class WebSocketClient extends events.EventEmitter {
     }
     if (this.options.bearerToken) {
       this.send({ event: 'auth', data: { token: this.options.bearerToken } });
+    }
+    if (this.options.sdkToken) {
+      this.send({ event: 'auth', data: { sdkToken: this.options.sdkToken } });
     }
   }
 
