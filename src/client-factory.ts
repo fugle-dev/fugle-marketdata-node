@@ -1,8 +1,11 @@
+import { HealthCheckConfig } from './websocket/client';
+
 export interface ClientOptions {
   apiKey?: string;
   sdkToken?: string;
   bearerToken?: string;
   baseUrl?: string;
+  healthCheck?: HealthCheckConfig;
 }
 
 export abstract class ClientFactory {

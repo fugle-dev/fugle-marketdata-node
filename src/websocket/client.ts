@@ -2,15 +2,24 @@ import * as events from 'events';
 import * as WebSocket from 'isomorphic-ws';
 import { CONNECT_EVENT, DISCONNECT_EVENT, MESSAGE_EVENT, ERROR_EVENT, AUTHENTICATED_EVENT, UNAUTHENTICATED_EVENT, UNAUTHENTICATED_MESSAGE } from '../constants';
 
+export interface HealthCheckConfig {
+  enabled: boolean;
+  pingInterval?: number;
+  maxMissedPongs?: number;
+}
+
 export interface WebSocketClientOptions {
   url: string;
   apiKey?: string;
   bearerToken?: string;
   sdkToken?: string;
+  healthCheck?: HealthCheckConfig;
 }
 
 export class WebSocketClient extends events.EventEmitter {
   private socket!: WebSocket;
+  private missedPongs = 0;
+  private pingTimerId: ReturnType<typeof setTimeout> | undefined;
 
   constructor(protected readonly options: WebSocketClientOptions) {
     super();
@@ -33,6 +42,27 @@ export class WebSocketClient extends events.EventEmitter {
 
   public disconnect() {
     this.socket.close();
+    if (this.pingTimerId) {
+      clearInterval(this.pingTimerId);
+    }
+  }
+
+  private detectConnectionStatus(state?: string) {
+    if (!this.options.healthCheck?.enabled) return;
+
+    try {
+      this.ping({ state });
+      this.missedPongs += 1;
+      const maxMissed = this.options.healthCheck.maxMissedPongs ?? 2;
+      if (this.missedPongs > maxMissed) {
+        this.disconnect();
+        return;
+      }
+    } catch (error) {
+      console.error(`Failed to send ping: ${error}`);
+      this.disconnect();
+      return;
+    }
   }
 
   public subscribe(params: { channel: string, [key: string]: any }) {
@@ -73,11 +103,22 @@ export class WebSocketClient extends events.EventEmitter {
 
       if (event === AUTHENTICATED_EVENT) {
         this.emit(AUTHENTICATED_EVENT, data);
+
+        // Start health check if enabled
+        if (this.options.healthCheck?.enabled) {
+          const interval = this.options.healthCheck.pingInterval ?? 30000;
+          this.pingTimerId = setInterval(() => {
+            this.detectConnectionStatus();
+          }, interval);
+        }
       }
       if (event === ERROR_EVENT) {
         if (data && data.message === UNAUTHENTICATED_MESSAGE) {
           this.emit(UNAUTHENTICATED_EVENT, data);
         }
+      }
+      if (event === 'pong') {
+        this.missedPongs = 0;
       }
     } catch (err) {}
   }
