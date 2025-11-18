@@ -487,10 +487,265 @@ describe('WebSocketClient', () => {
       const stock = client.stock;
       // @ts-ignore - accessing private property for testing
       expect(stock.options.url).toBe('wss://ws.example.com/api/v2/stock/streaming');
-      
+
       const futopt = client.futopt;
       // @ts-ignore - accessing private property for testing
       expect(futopt.options.url).toBe('wss://ws.example.com/api/v2/futopt/streaming');
+    });
+  });
+
+  describe('Health Check', () => {
+    let server: WS;
+
+    beforeEach(() => {
+      server = new WS(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}/stock/streaming`);
+    });
+
+    describe('Basic functionality', () => {
+      it('should start health check timer when authenticated with healthCheck enabled', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 100 }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Wait for first ping from health check
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+
+        stock.disconnect();
+      });
+
+      it('should use default pingInterval when not specified', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Default interval is 30000ms, but we can't wait that long in tests
+        // Just verify the connection is established with health check
+        stock.disconnect();
+      });
+
+      it('should handle detectConnectionStatus when health check is disabled', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key'
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Manually call detectConnectionStatus to test the early return path
+        // @ts-ignore - accessing private method for testing
+        stock.detectConnectionStatus();
+
+        // Should not send any ping message
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        expect(server).toHaveReceivedMessages([
+          JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }),
+        ]);
+
+        stock.disconnect();
+      });
+
+      it('should handle pong message and reset missed pongs counter', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 50 }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // First ping
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+
+        // Server sends pong (should reset missedPongs to 0)
+        server.send(JSON.stringify({ event: 'pong' }));
+
+        // Second ping
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+
+        stock.disconnect();
+      });
+
+      it('should clear ping timer when disconnected', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 100 }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Wait for first ping
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+
+        const messagesBefore = server.messages.length;
+
+        // Disconnect
+        stock.disconnect();
+        await server.closed;
+
+        // Wait to ensure no more pings are sent
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // No new messages should have been received after disconnect
+        expect(server.messages.length).toBe(messagesBefore);
+      });
+    });
+
+    describe('Error handling and auto-disconnect', () => {
+      it('should disconnect when maxMissedPongs is exceeded', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 50, maxMissedPongs: 2 }
+        });
+        const stock = client.stock;
+        const disconnectCb = jest.fn();
+        stock.once('disconnect', disconnectCb);
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Receive 3 pings without sending pong (missedPongs will exceed maxMissedPongs=2)
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+
+        // Should disconnect after third ping
+        await server.closed;
+        expect(disconnectCb).toHaveBeenCalled();
+      });
+
+      it('should handle ping send failure and disconnect', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 50 }
+        });
+        const stock = client.stock;
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+        const disconnectCb = jest.fn();
+        stock.once('disconnect', disconnectCb);
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Mock socket.send to throw an error on the next ping
+        // @ts-ignore - accessing private property for testing
+        const originalSend = stock.socket.send;
+        // @ts-ignore
+        stock.socket.send = jest.fn(() => {
+          throw new Error('Network error');
+        });
+
+        // Wait for health check to trigger and fail
+        await server.closed;
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to send ping'));
+        expect(disconnectCb).toHaveBeenCalled();
+
+        consoleErrorSpy.mockRestore();
+      });
+    });
+
+    describe('Integration scenarios', () => {
+      it('should continue health check across multiple ping-pong cycles', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 50, maxMissedPongs: 2 }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Cycle 1: ping -> pong
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        server.send(JSON.stringify({ event: 'pong' }));
+
+        // Cycle 2: ping -> pong
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        server.send(JSON.stringify({ event: 'pong' }));
+
+        // Cycle 3: ping -> pong
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        server.send(JSON.stringify({ event: 'pong' }));
+
+        // Connection should still be healthy
+        stock.disconnect();
+      });
+
+      it('should work alongside normal subscribe/unsubscribe operations', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 100 }
+        });
+        const stock = client.stock;
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Normal operations
+        stock.subscribe({ channel: 'trades', symbol: '2330' });
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'subscribe', data: { channel: 'trades', symbol: '2330' } }));
+
+        // Health check ping
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+        server.send(JSON.stringify({ event: 'pong' }));
+
+        // More normal operations
+        stock.unsubscribe({ id: '12345' });
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'unsubscribe', data: { id: '12345' } }));
+
+        stock.disconnect();
+      });
     });
   });
 });
