@@ -1,5 +1,17 @@
 # Changelog
 
+# [1.4.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.3.2...v1.4.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* export HealthCheckConfig and WebSocketClientOptions types ([ed1dfe9](https://github.com/fugle-dev/fugle-marketdata-node/commit/ed1dfe9194937b5fe8acaa02ea79f9cd29d90410))
+
+
+### Features
+
+* add WebSocket health check with ping/pong ([79d24ae](https://github.com/fugle-dev/fugle-marketdata-node/commit/79d24aeb61f671599c45942a6b00083d1b6e1b38))
+
 ## [1.3.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.3.1...v1.3.2) (2025-07-18)
 
 ## [1.3.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.3.0...v1.3.1) (2025-07-18)
