@@ -507,6 +507,113 @@ describe('RestClient', () => {
         });
       });
     });
+
+    describe('.corporateActions', () => {
+      it('should contain stock corporate actions api endpoints', () => {
+        const client = new RestClient({ apiKey: 'api-key' });
+        const stock = client.stock as RestStockClient;
+        expect(stock.corporateActions).toBeDefined();
+        expect(stock.corporateActions).toHaveProperty('capitalChanges');
+        expect(stock.corporateActions).toHaveProperty('dividends');
+        expect(stock.corporateActions).toHaveProperty('listingApplicants');
+      });
+
+      describe('.capitalChanges()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.capitalChanges({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'asc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/capital-changes?end_date=2025-12-31&sort=asc&start_date=2025-01-01',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.capitalChanges({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'asc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/capital-changes?end_date=2025-12-31&sort=asc&start_date=2025-01-01',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request without params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.capitalChanges();
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/capital-changes',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+
+      describe('.dividends()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.dividends({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'desc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/dividends?end_date=2025-12-31&sort=desc&start_date=2025-01-01',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.dividends({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'desc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/dividends?end_date=2025-12-31&sort=desc&start_date=2025-01-01',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request without params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.dividends();
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/dividends',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+
+      describe('.listingApplicants()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.listingApplicants({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'asc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/listing-applicants?end_date=2025-12-31&sort=asc&start_date=2025-01-01',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.listingApplicants({ start_date: '2025-01-01', end_date: '2025-12-31', sort: 'asc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/listing-applicants?end_date=2025-12-31&sort=asc&start_date=2025-01-01',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request without params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.corporateActions.listingApplicants();
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/corporate-actions/listing-applicants',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+    });
   });
 
   describe('.futopt', () => {

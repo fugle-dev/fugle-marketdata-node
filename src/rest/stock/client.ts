@@ -15,6 +15,9 @@ import { RestStockTechnicalRsiParams, rsi } from './technical/rsi';
 import { RestStockTechnicalKdjParams, kdj } from './technical/kdj';
 import { RestStockTechnicalMacdParams, macd } from './technical/macd';
 import { RestStockTechnicalBbParams, bb } from './technical/bb';
+import { RestStockCorporateActionsCapitalChangesParams, capitalChanges } from './corporate-actions/capital-changes';
+import { RestStockCorporateActionsDividendsParams, dividends } from './corporate-actions/dividends';
+import { RestStockCorporateActionsListingApplicantsParams, listingApplicants } from './corporate-actions/listing-applicants';
 
 export class RestStockClient extends RestClient {
   get intraday() {
@@ -54,6 +57,15 @@ export class RestStockClient extends RestClient {
       kdj: (params: RestStockTechnicalKdjParams) => kdj(request, params),
       macd: (params: RestStockTechnicalMacdParams) => macd(request, params),
       bb: (params: RestStockTechnicalBbParams) => bb(request, params),
+    };
+  }
+
+  get corporateActions() {
+    const request = this.request;
+    return {
+      capitalChanges: (params?: RestStockCorporateActionsCapitalChangesParams) => capitalChanges(request, params),
+      dividends: (params?: RestStockCorporateActionsDividendsParams) => dividends(request, params),
+      listingApplicants: (params?: RestStockCorporateActionsListingApplicantsParams) => listingApplicants(request, params),
     };
   }
 }
