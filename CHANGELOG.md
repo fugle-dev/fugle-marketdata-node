@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.0...v1.4.1) (2026-01-12)
+
+
+### Features
+
+* **rest:** add corporate actions API endpoints ([e618d1c](https://github.com/fugle-dev/fugle-marketdata-node/commit/e618d1c777ef84cf6a0dfaade371d94bd3f2abf6))
+
 # [1.4.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.3.2...v1.4.0) (2025-11-18)
 
 

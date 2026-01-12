@@ -1,6 +1,6 @@
 {
   "name": "@fugle/marketdata",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Fugle MarketData API client library for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
