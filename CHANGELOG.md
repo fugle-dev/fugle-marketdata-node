@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.1...v1.4.2) (2026-01-15)
+
+
+### Features
+
+* **rest:** add adjusted parameter to historical candles API ([5bbc60b](https://github.com/fugle-dev/fugle-marketdata-node/commit/5bbc60b061c5ca5b297140ab266b7feff41ba4a1))
+
 ## [1.4.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.0...v1.4.1) (2026-01-12)
 
 
