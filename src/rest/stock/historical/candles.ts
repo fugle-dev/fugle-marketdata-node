@@ -7,14 +7,16 @@ export interface RestStockHistoricalCandlesParams {
   timeframe?: 'D' | 'W' | 'M' | '1' | '3' | '5' | '10' | '15' | '30' | '60';
   fields?: string;
   sort?: 'asc' | 'desc';
+  adjusted?: boolean;
 }
 
 export interface RestStockHistoricalCandlesResponse {
   symbol: string;
-  type: string;
-  exchange: string;
-  market: string;
-  timeframe: string;
+  type?: string;
+  exchange?: string;
+  market?: string;
+  timeframe?: string;
+  adjusted?: boolean;
   data: Array<{
     date: string;
     open: number;
