@@ -16,10 +16,17 @@ export interface WebSocketClientOptions {
   healthCheck?: HealthCheckConfig;
 }
 
+export interface DisconnectReason {
+  reason: 'health-check-timeout';
+}
+
 export class WebSocketClient extends events.EventEmitter {
   private socket!: WebSocket;
-  private missedPongs = 0;
+  private consecutiveMisses = 0;
+  private lastMessageAt = 0;
+  private lastPingAt = 0;
   private pingTimerId: ReturnType<typeof setTimeout> | undefined;
+  private pendingDisconnectReason: DisconnectReason | undefined;
 
   constructor(protected readonly options: WebSocketClientOptions) {
     super();
@@ -28,9 +35,17 @@ export class WebSocketClient extends events.EventEmitter {
   public connect() {
     this.socket = new WebSocket(this.options.url);
     this.socket.onopen = () => this.emit(CONNECT_EVENT);
-    this.socket.onmessage = event => this.emit(MESSAGE_EVENT, event.data);
+    this.socket.onmessage = event => {
+      // Any inbound message counts as freshness.
+      this.lastMessageAt = Date.now();
+      this.emit(MESSAGE_EVENT, event.data);
+    };
     this.socket.onerror = event => this.emit(ERROR_EVENT, event.error);
-    this.socket.onclose = event => this.emit(DISCONNECT_EVENT, event);
+    this.socket.onclose = event => {
+      const reason = this.pendingDisconnectReason;
+      this.pendingDisconnectReason = undefined;
+      this.emit(DISCONNECT_EVENT, event, reason);
+    };
     this.on(CONNECT_EVENT, () => this.authenticate());
     this.on(MESSAGE_EVENT, message => this.handleMessage(message));
 
@@ -44,22 +59,34 @@ export class WebSocketClient extends events.EventEmitter {
     this.socket.close();
     if (this.pingTimerId) {
       clearInterval(this.pingTimerId);
+      this.pingTimerId = undefined;
     }
   }
 
-  private detectConnectionStatus(state?: string) {
+  private detectConnectionStatus() {
     if (!this.options.healthCheck?.enabled) return;
 
+    const maxMissed = this.options.healthCheck.maxMissedPongs ?? 2;
+
+    // Freshness check: did anything arrive since our last ping?
+    if (this.lastMessageAt < this.lastPingAt) {
+      this.consecutiveMisses += 1;
+    } else {
+      this.consecutiveMisses = 0;
+    }
+
+    if (this.consecutiveMisses >= maxMissed) {
+      this.pendingDisconnectReason = { reason: 'health-check-timeout' };
+      this.disconnect();
+      return;
+    }
+
     try {
-      this.ping({ state });
-      this.missedPongs += 1;
-      const maxMissed = this.options.healthCheck.maxMissedPongs ?? 2;
-      if (this.missedPongs > maxMissed) {
-        this.disconnect();
-        return;
-      }
+      this.ping({});
+      this.lastPingAt = Date.now();
     } catch (error) {
       console.error(`Failed to send ping: ${error}`);
+      this.pendingDisconnectReason = { reason: 'health-check-timeout' };
       this.disconnect();
       return;
     }
@@ -107,6 +134,11 @@ export class WebSocketClient extends events.EventEmitter {
         // Start health check if enabled
         if (this.options.healthCheck?.enabled) {
           const interval = this.options.healthCheck.pingInterval ?? 30000;
+          this.consecutiveMisses = 0;
+          // Seed timestamps so the first tick treats the connection as fresh.
+          const now = Date.now();
+          this.lastMessageAt = now;
+          this.lastPingAt = now;
           this.pingTimerId = setInterval(() => {
             this.detectConnectionStatus();
           }, interval);
@@ -116,9 +148,6 @@ export class WebSocketClient extends events.EventEmitter {
         if (data && data.message === UNAUTHENTICATED_MESSAGE) {
           this.emit(UNAUTHENTICATED_EVENT, data);
         }
-      }
-      if (event === 'pong') {
-        this.missedPongs = 0;
       }
     } catch (err) {}
   }
