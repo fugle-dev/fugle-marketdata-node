@@ -36,6 +36,10 @@ const futopt = client.futopt; // Futures & Options REST API client
 
 stock.intraday.quote({ symbol: '2330' })
   .then(data => console.log(data));
+
+// Get the daily component holdings of an ETF
+stock.ownership.etfHoldings({ symbol: '0050', from: '2026-05-01', to: '2026-05-21', sort: 'desc' })
+  .then(data => console.log(data));
 ```
 
 ### WebSocket API

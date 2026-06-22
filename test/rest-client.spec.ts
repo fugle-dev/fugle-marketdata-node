@@ -308,6 +308,47 @@ describe('RestClient', () => {
       });
     });
 
+    describe('.ownership', () => {
+      it('should contain stock ownership api endpoints', () => {
+        const client = new RestClient({ apiKey: 'api-key' });
+        const stock = client.stock as RestStockClient;
+        expect(stock.ownership).toBeDefined();
+        expect(stock.ownership).toHaveProperty('etfHoldings');
+      });
+
+      describe('.etfHoldings()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.etfHoldings({ symbol: '0050' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.etfHoldings({ symbol: '0050' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.etfHoldings({ symbol: '0050', from: '2026-05-01', to: '2026-05-21', sort: 'desc', code: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050?code=2330&from=2026-05-01&sort=desc&to=2026-05-21',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+    });
+
     describe('.snapshot', () => {
       it('should contain stock intraday api endpoints', () => {
         const client = new RestClient({ apiKey: 'api-key' });
