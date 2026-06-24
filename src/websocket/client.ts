@@ -66,7 +66,9 @@ export class WebSocketClient extends events.EventEmitter {
   private detectConnectionStatus() {
     if (!this.options.healthCheck?.enabled) return;
 
-    const maxMissed = this.options.healthCheck.maxMissedPongs ?? 2;
+    // Clamp to >= 1: maxMissedPongs of 0 would disconnect a healthy connection
+    // on the first tick (consecutiveMisses starts at 0, and 0 >= 0).
+    const maxMissed = Math.max(1, this.options.healthCheck.maxMissedPongs ?? 2);
 
     // Freshness check: did anything arrive since our last ping?
     if (this.lastMessageAt < this.lastPingAt) {

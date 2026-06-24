@@ -651,6 +651,32 @@ describe('WebSocketClient', () => {
         expect(disconnectCb).not.toHaveBeenCalled();
         stock.disconnect();
       });
+
+      it('should clamp maxMissedPongs to >= 1 (0 must not disconnect a healthy connection)', async () => {
+        const client = new WebSocketClient({
+          apiKey: 'api-key',
+          healthCheck: { enabled: true, pingInterval: 50, maxMissedPongs: 0 }
+        });
+        const stock = client.stock;
+        const disconnectCb = jest.fn();
+        stock.once('disconnect', disconnectCb);
+
+        const promise = stock.connect();
+        await server.connected;
+        await expect(server).toReceiveMessage(JSON.stringify({ event: 'auth', data: { apikey: 'api-key' } }));
+
+        server.send(JSON.stringify({ event: 'authenticated', data: { message: 'Authenticated successfully' } }));
+        await promise;
+
+        // Keep the connection fresh; with a correct clamp it should never disconnect.
+        for (let i = 0; i < 3; i++) {
+          await expect(server).toReceiveMessage(JSON.stringify({ event: 'ping', data: {} }));
+          server.send(JSON.stringify({ event: 'data', data: {} }));
+        }
+
+        expect(disconnectCb).not.toHaveBeenCalled();
+        stock.disconnect();
+      });
     });
 
     describe('Error handling and auto-disconnect', () => {
