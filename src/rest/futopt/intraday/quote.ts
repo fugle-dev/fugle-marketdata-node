@@ -9,9 +9,8 @@ export interface RestFutOptIntradayQuoteResponse {
   date: string;
   type: string;
   exchange: string;
+  market: string;
   symbol: string;
-  name: string;
-  previousClose: number;
   openPrice: number;
   openTime: number;
   highPrice: number;
@@ -21,11 +20,11 @@ export interface RestFutOptIntradayQuoteResponse {
   closePrice: number;
   closeTime: number;
   lastPrice: number;
-  lastSize: number;
   avgPrice: number;
   change: number;
   changePercent: number;
   amplitude: number;
+  lastSize: number;
   bids: Array<{
     price: number;
     size: number;
@@ -35,19 +34,50 @@ export interface RestFutOptIntradayQuoteResponse {
     size: number;
   }>;
   total: {
+    tradeValue: number;
     tradeVolume: number;
-    totalBidMatch: number;
-    totalAskMatch: number;
+    tradeVolumeAtBid: number;
+    tradeVolumeAtAsk: number;
+    transaction: number;
+    time: number;
+  };
+  priceLimits: {
+    price: number;
+    bid: number;
+    ask: number;
+    curb: number;
   };
   lastTrade: {
+    bid: number;
+    ask: number;
     price: number;
     size: number;
     time: number;
+    serial: number;
   };
+  lastTrial: {
+    bid: number;
+    ask: number;
+    price: number;
+    size: number;
+    time: number;
+    serial: number;
+  };
+  tradingHalt: {
+    isHalted: boolean;
+    time: number;
+  };
+  isTrial: boolean;
+  isDelayedOpen: boolean;
+  isDelayedClose: boolean;
+  isContinuous: boolean;
+  isOpen: boolean;
+  isClose: boolean;
+  serial: number;
   lastUpdated: number;
 }
 
 export const quote = (request: RestClientRequest, params: RestFutOptIntradayQuoteParams) => {
   const { symbol, ...options } = params;
-  return request(`intraday/quote/${symbol}`, options) as Promise<RestFutOptIntradayQuoteResponse>;
+  return request(`intraday/quote/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptIntradayQuoteResponse>;
 }

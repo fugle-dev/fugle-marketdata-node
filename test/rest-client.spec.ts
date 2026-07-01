@@ -686,6 +686,16 @@ describe('RestClient', () => {
             { headers: { 'Authorization': 'Bearer bearer-token' } },
           );
         });
+
+        it('should request spread tickers with isSpread filter', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.tickers({ type: 'FUTURE', isSpread: true });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/tickers?isSpread=true&type=FUTURE',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
       });
 
 
@@ -731,6 +741,16 @@ describe('RestClient', () => {
             { headers: { 'Authorization': 'Bearer bearer-token' } },
           );
         });
+
+        it('should url-encode spread contract symbols', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.quote({ symbol: 'MXFA6/C6' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/quote/MXFA6%2FC6',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
       });
 
       describe('.candles()', () => {
@@ -773,6 +793,16 @@ describe('RestClient', () => {
           expect(fetch).toBeCalledWith(
             'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/trades/TXFH4',
             { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request trial trades with isTrial filter', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.intraday.trades({ symbol: 'TXFH4', isTrial: true });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/intraday/trades/TXFH4?isTrial=true',
+            { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
       });

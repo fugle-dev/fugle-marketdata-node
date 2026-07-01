@@ -38,6 +38,26 @@ stock.intraday.quote({ symbol: '2330' })
   .then(data => console.log(data));
 ```
 
+#### Futures & Options spread contracts
+
+Spread (combination) contract symbols contain a `/` separator (e.g. `MXFA6/C6`).
+The symbol is URL-encoded automatically, so you can pass it as-is. Their quotes
+may carry **negative** prices.
+
+```js
+// List tradable spread contracts
+futopt.intraday.tickers({ type: 'FUTURE', isSpread: true })
+  .then(data => console.log(data));
+
+// Quote a spread contract
+futopt.intraday.quote({ symbol: 'MXFA6/C6' })
+  .then(data => console.log(data));
+```
+
+The futopt quote response includes trial-matching (試搓) fields `lastTrial` and
+`isTrial` (both `null`/`false` outside the trial session). You can also fetch
+trial-matching trade ticks with `futopt.intraday.trades({ symbol, isTrial: true })`.
+
 ### WebSocket API
 
 ```js
@@ -57,6 +77,10 @@ stock.on('message', (message) => {
   console.log(data);
 });
 ```
+
+The futopt `books` channel may include an extended 6th order-book level as
+`derivedBid` / `derivedAsk` (present only when the exchange sends DERIVED-FLAG),
+and trial-session messages carry an `isTrial` flag.
 
 ## License
 

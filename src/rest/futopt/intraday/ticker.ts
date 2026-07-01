@@ -19,5 +19,5 @@ export interface RestFutOptIntradayTickerResponse {
 
 export const ticker = (request: RestClientRequest, params: RestFutOptIntradayTickerParams) => {
   const { symbol, ...options } = params;
-  return request(`intraday/ticker/${symbol}`, options) as Promise<RestFutOptIntradayTickerResponse>;
+  return request(`intraday/ticker/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptIntradayTickerResponse>;
 }

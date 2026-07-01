@@ -18,5 +18,5 @@ export interface RestFutOptIntradayVolumesResponse {
 
 export const volumes = (request: RestClientRequest, params: RestFutOptIntradayVolumesParams) => {
   const { symbol, ...options } = params;
-  return request(`intraday/volumes/${symbol}`, options) as Promise<RestFutOptIntradayVolumesResponse>;
+  return request(`intraday/volumes/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptIntradayVolumesResponse>;
 }

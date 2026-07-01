@@ -6,6 +6,7 @@ export interface RestFutOptIntradayTickersParams {
   session?: 'REGULAR' | 'AFTERHOURS';
   product?: string;
   contractType?: 'I' | 'R' | 'B' | 'C' | 'S' | 'E';
+  isSpread?: boolean;
 }
 
 export interface RestFutOptIntradayTickersResponse {
@@ -14,6 +15,7 @@ export interface RestFutOptIntradayTickersResponse {
   session: string;
   product?: string;
   contractType?: string;
+  isSpread?: boolean;
   data: Array<{
     type: string;
     contractType: string;
