@@ -28,5 +28,5 @@ export interface RestFutOptHistoricalDailyResponse {
 
 export const daily = (request: RestClientRequest, params: RestFutOptHistoricalDailyParams) => {
   const { symbol, ...options } = params;
-  return request(`historical/daily/${symbol}`, options) as Promise<RestFutOptHistoricalDailyResponse>;
+  return request(`historical/daily/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptHistoricalDailyResponse>;
 }

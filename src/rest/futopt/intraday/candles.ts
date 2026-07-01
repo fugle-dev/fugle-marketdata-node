@@ -25,5 +25,5 @@ export interface RestFutOptIntradayCandlesResponse {
 
 export const candles = (request: RestClientRequest, params: RestFutOptIntradayCandlesParams) => {
   const { symbol, ...options } = params;
-  return request(`intraday/candles/${symbol}`, options) as Promise<RestFutOptIntradayCandlesResponse>;
+  return request(`intraday/candles/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptIntradayCandlesResponse>;
 }

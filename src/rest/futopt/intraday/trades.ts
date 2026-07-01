@@ -5,6 +5,7 @@ export interface RestFutOptIntradayTradesParams {
   session?: 'afterhours';
   offset?: number;
   limit?: number;
+  isTrial?: boolean;
 }
 
 export interface RestFutOptIntradayTradesResponse {
@@ -21,5 +22,5 @@ export interface RestFutOptIntradayTradesResponse {
 
 export const trades = (request: RestClientRequest, params: RestFutOptIntradayTradesParams) => {
   const { symbol, ...options } = params;
-  return request(`intraday/trades/${symbol}`, options) as Promise<RestFutOptIntradayTradesResponse>;
+  return request(`intraday/trades/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptIntradayTradesResponse>;
 }

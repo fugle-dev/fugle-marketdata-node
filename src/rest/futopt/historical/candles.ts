@@ -29,5 +29,5 @@ export interface RestFutOptHistoricalCandlesResponse {
 
 export const candles = (request: RestClientRequest, params: RestFutOptHistoricalCandlesParams) => {
   const { symbol, ...options } = params;
-  return request(`historical/candles/${symbol}`, options) as Promise<RestFutOptHistoricalCandlesResponse>;
+  return request(`historical/candles/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptHistoricalCandlesResponse>;
 }
