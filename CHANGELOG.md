@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.2...v1.5.0-rc.1) (2026-07-03)
+
+
+### Features
+
+* support futopt spread contracts, trial matching & derived quote fields ([51e5926](https://github.com/fugle-dev/fugle-marketdata-node/commit/51e592640ccebae8cd75f96009c5da8ccdd109ce))
+* add stock ownership etfHoldings REST endpoint ([07ec34c](https://github.com/fugle-dev/fugle-marketdata-node/commit/07ec34c111e4bdc64c53cb84b96a87eb1662e729))
+* **websocket:** freshness-based health check with disconnect reason ([43d2725](https://github.com/fugle-dev/fugle-marketdata-node/commit/43d27258a43d3890f24a32fdb49acc1160a77d53))
+
+
+### Bug Fixes
+
+* **websocket:** clamp maxMissedPongs to a minimum of 1 ([4f04707](https://github.com/fugle-dev/fugle-marketdata-node/commit/4f0470739244dd9ad8a582c49addef84d342a995))
+
 ## [1.4.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.1...v1.4.2) (2026-01-15)
 
 
