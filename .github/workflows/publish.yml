@@ -24,6 +24,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
 
+      - name: Update npm (trusted publishing requires npm >= 11.5.1)
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -34,13 +37,12 @@ jobs:
         run: yarn test:cov
 
       - name: Publish to NPM
-        # Prerelease tags (e.g. v1.5.0-rc.1) go to the `next` dist-tag so they
-        # are not installed by default; final tags (v1.5.0) go to `latest`.
+        # Publishes via npm Trusted Publishing (OIDC) — no NPM_TOKEN needed;
+        # provenance is attached automatically. Prerelease tags (e.g.
+        # v1.5.0-rc.1) go to the `next` dist-tag; final tags (v1.5.0) to `latest`.
         run: |
           if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
-            npm publish --provenance --access public --tag next
+            npm publish --access public --tag next
           else
-            npm publish --provenance --access public
+            npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
