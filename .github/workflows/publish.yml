@@ -34,6 +34,13 @@ jobs:
         run: yarn test:cov
 
       - name: Publish to NPM
-        run: npm publish --provenance --access public
+        # Prerelease tags (e.g. v1.5.0-rc.1) go to the `next` dist-tag so they
+        # are not installed by default; final tags (v1.5.0) go to `latest`.
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
+            npm publish --provenance --access public --tag next
+          else
+            npm publish --provenance --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
