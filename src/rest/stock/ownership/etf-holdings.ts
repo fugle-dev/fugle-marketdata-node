@@ -5,7 +5,6 @@ export interface RestStockOwnershipEtfHoldingsParams {
   from?: string;
   to?: string;
   sort?: 'asc' | 'desc';
-  code?: string;
 }
 
 export interface RestStockOwnershipEtfHoldingsComponent {
