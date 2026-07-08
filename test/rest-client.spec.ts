@@ -340,9 +340,9 @@ describe('RestClient', () => {
         it('should request with query params', async () => {
           const client = new RestClient({ apiKey: 'api-key' });
           const stock = client.stock as RestStockClient;
-          await stock.ownership.etfHoldings({ symbol: '0050', from: '2026-05-01', to: '2026-05-21', sort: 'desc', code: '2330' });
+          await stock.ownership.etfHoldings({ symbol: '0050', from: '2026-05-01', to: '2026-05-21', sort: 'desc' });
           expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050?code=2330&from=2026-05-01&sort=desc&to=2026-05-21',
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050?from=2026-05-01&sort=desc&to=2026-05-21',
             { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
