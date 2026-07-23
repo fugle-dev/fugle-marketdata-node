@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.5.0-rc.3](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2026-07-23)
+
+
+### Features
+
+* **websocket:** add futopt streaming version option, defaulting futopt to v1.1 with trial frames ([3912cf8](https://github.com/fugle-dev/fugle-marketdata-node/commit/3912cf85a2e9c0fa00d0bdb0a6ffe71d65e85c78))
+
 # [1.5.0-rc.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.1...v1.5.0-rc.2) (2026-07-08)
 
 ## [1.5.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.2...v1.5.0-rc.1) (2026-07-03)
