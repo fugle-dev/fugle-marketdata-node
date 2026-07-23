@@ -1,4 +1,5 @@
 import { HealthCheckConfig } from './websocket/client';
+import { WebSocketVersionOption } from './websocket/version';
 
 export interface ClientOptions {
   apiKey?: string;
@@ -6,6 +7,8 @@ export interface ClientOptions {
   bearerToken?: string;
   baseUrl?: string;
   healthCheck?: HealthCheckConfig;
+  /** WebSocket only; ignored by the REST client. */
+  version?: WebSocketVersionOption;
 }
 
 export abstract class ClientFactory {

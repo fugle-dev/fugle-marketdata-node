@@ -55,7 +55,8 @@ export interface RestFutOptIntradayQuoteResponse {
     time: number;
     serial: number;
   };
-  lastTrial: {
+  /** Last trial match (試撮); absent outside a trial session. */
+  lastTrial?: {
     bid: number;
     ask: number;
     price: number;
@@ -67,7 +68,12 @@ export interface RestFutOptIntradayQuoteResponse {
     isHalted: boolean;
     time: number;
   };
-  isTrial: boolean;
+  /**
+   * Marks the quote as trial-matching (試撮) — a simulated match, not a trade.
+   * Omitted rather than sent as `false` outside a trial session, during which
+   * `lastPrice` / `lastSize` are the trial values.
+   */
+  isTrial?: boolean;
   isDelayedOpen: boolean;
   isDelayedClose: boolean;
   isContinuous: boolean;

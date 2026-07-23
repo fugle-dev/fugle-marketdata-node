@@ -3,9 +3,14 @@ import { WebSocketClient } from '../src';
 import { WebSocketStockClient } from '../src/websocket/stock/client';
 import { WebSocketFutOptClient } from '../src/websocket/futopt/client';
 import { WS } from 'jest-websocket-mock';
-import { FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL, FUGLE_MARKETDATA_API_VERSION } from '../src/constants';
+import { FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL, FUGLE_MARKETDATA_API_VERSION, FUGLE_MARKETDATA_WS_SUPPORTED_VERSIONS } from '../src/constants';
 
 jest.mock('isomorphic-ws', () => WebSocket);
+
+const latest = (product: 'stock' | 'futopt') => {
+  const versions = FUGLE_MARKETDATA_WS_SUPPORTED_VERSIONS[product];
+  return versions[versions.length - 1];
+};
 
 describe('WebSocketClient', () => {
   afterEach(() => {
@@ -274,7 +279,7 @@ describe('WebSocketClient', () => {
     let server: WS;
 
     beforeEach(() => {
-      server = new WS(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}/futopt/streaming`);
+      server = new WS(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${latest('futopt')}/futopt/streaming`);
     });
 
     it('should return a WebSocketFutOptClient instance', () => {
@@ -491,6 +496,85 @@ describe('WebSocketClient', () => {
       const futopt = client.futopt;
       // @ts-ignore - accessing private property for testing
       expect(futopt.options.url).toBe('wss://ws.example.com/api/v2/futopt/streaming');
+    });
+  });
+
+  describe('streaming version', () => {
+    // @ts-ignore - accessing private property for testing
+    const urlOf = (client: WebSocketClient, product: 'stock' | 'futopt') => client[product].options.url;
+
+    it('should default each product to its latest version', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key' });
+      expect(urlOf(client, 'futopt')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.1/futopt/streaming`);
+      expect(urlOf(client, 'stock')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.0/stock/streaming`);
+    });
+
+    it('should apply a scalar version to futopt', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', version: 'v1.1' });
+      expect(urlOf(client, 'futopt')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.1/futopt/streaming`);
+    });
+
+    it('should apply a scalar version to every product when all support it', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', version: 'v1.0' });
+      expect(urlOf(client, 'futopt')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.0/futopt/streaming`);
+      expect(urlOf(client, 'stock')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.0/stock/streaming`);
+    });
+
+    it('should throw for a product that does not serve the scalar version', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', version: 'v1.1' });
+      expect(() => client.stock).toThrowError(
+        "stock streaming does not support v1.1 (supported: v1.0). Use version: { futopt: 'v1.1' } to target a single product."
+      );
+    });
+
+    it('should apply a per-product version map', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', version: { futopt: 'v1.1' } });
+      expect(urlOf(client, 'futopt')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.1/futopt/streaming`);
+      expect(urlOf(client, 'stock')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.0/stock/streaming`);
+    });
+
+    it('should pin futopt back to v1.0 through the map', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', version: { futopt: 'v1.0' } });
+      expect(urlOf(client, 'futopt')).toBe(`${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/v1.0/futopt/streaming`);
+    });
+
+    it('should reject an unsupported product/version pair in the map at compile time', () => {
+      // @ts-expect-error - stock only serves v1.0
+      const client = new WebSocketClient({ apiKey: 'api-key', version: { stock: 'v1.1' } });
+      expect(() => client.stock).toThrowError('stock streaming does not support v1.1');
+    });
+
+    it('should leave a custom baseUrl alone when no version is given', () => {
+      const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://custom-ws.example.com/v2.0' });
+      expect(urlOf(client, 'futopt')).toBe('wss://custom-ws.example.com/v2.0/futopt/streaming');
+    });
+
+    it('should swap the version segment of a custom baseUrl when a version is given', () => {
+      const client = new WebSocketClient({
+        apiKey: 'api-key',
+        baseUrl: 'wss://api-dev.fugle.tw/marketdata/v1.0',
+        version: { futopt: 'v1.1' },
+      });
+      expect(urlOf(client, 'futopt')).toBe('wss://api-dev.fugle.tw/marketdata/v1.1/futopt/streaming');
+      expect(urlOf(client, 'stock')).toBe('wss://api-dev.fugle.tw/marketdata/v1.0/stock/streaming');
+    });
+
+    it('should swap the version segment of a custom baseUrl with trailing slashes', () => {
+      const client = new WebSocketClient({
+        apiKey: 'api-key',
+        baseUrl: 'wss://api-dev.fugle.tw/marketdata/v1.0//',
+        version: { futopt: 'v1.1' },
+      });
+      expect(urlOf(client, 'futopt')).toBe('wss://api-dev.fugle.tw/marketdata/v1.1/futopt/streaming');
+    });
+
+    it('should leave a custom baseUrl without a version segment untouched', () => {
+      const client = new WebSocketClient({
+        apiKey: 'api-key',
+        baseUrl: 'wss://ws.example.com/api',
+        version: { futopt: 'v1.1' },
+      });
+      expect(urlOf(client, 'futopt')).toBe('wss://ws.example.com/api/futopt/streaming');
     });
   });
 

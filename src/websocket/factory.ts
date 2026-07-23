@@ -1,7 +1,8 @@
 import { WebSocketClient } from './client';
 import { WebSocketStockClient } from './stock/client';
 import { WebSocketFutOptClient } from './futopt/client';
-import { FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL, FUGLE_MARKETDATA_API_VERSION } from '../constants';
+import { WebSocketProduct, applyVersionToBaseUrl, resolveVersion } from './version';
+import { FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL } from '../constants';
 import { ClientFactory } from '../client-factory';
 
 export class WebSocketClientFactory extends ClientFactory {
@@ -15,11 +16,29 @@ export class WebSocketClientFactory extends ClientFactory {
     return this.getClient('futopt') as WebSocketFutOptClient;
   }
 
-  private getClient(type: 'stock' | 'futopt') {
+  /**
+   * A `baseUrl` is only re-versioned when `version` was explicitly supplied.
+   * Left alone otherwise, the version the caller wrote into their URL wins —
+   * which keeps custom and internal deployments (whose paths need not follow
+   * the public versioning at all) working exactly as before.
+   */
+  private resolveBaseUrl(type: WebSocketProduct) {
+    const version = resolveVersion(type, this.options.version);
+
+    if (!this.options.baseUrl) {
+      return `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${version}`;
+    }
+
+    return this.options.version !== undefined
+      ? applyVersionToBaseUrl(this.options.baseUrl, version)
+      : this.options.baseUrl;
+  }
+
+  private getClient(type: WebSocketProduct) {
     let client = this.clients.get(type);
 
     if (!client) {
-      const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
+      const baseUrl = this.resolveBaseUrl(type);
       const url = `${baseUrl.replace(/\/+$/, '')}/${type}/streaming`;
 
       /* istanbul ignore else */
