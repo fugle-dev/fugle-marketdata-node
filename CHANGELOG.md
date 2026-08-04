@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.5.0-rc.5](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.4...v1.5.0-rc.5) (2026-08-04)
+
+
+### Features
+
+* **client:** expose the resolved endpoint on rest and websocket clients ([c3edb40](https://github.com/fugle-dev/fugle-marketdata-node/commit/c3edb40257ccb775967b4aaddd49ab6056be036f))
+
 # [1.5.0-rc.4](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2026-08-04)
 
 
