@@ -84,16 +84,14 @@ describe('WebSocketClient', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://custom-ws.example.com' });
       const stock = client.stock;
       expect(stock).toBeInstanceOf(WebSocketStockClient);
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.url).toBe('wss://custom-ws.example.com/v1.0/stock/streaming');
+      expect(stock.url).toBe('wss://custom-ws.example.com/v1.0/stock/streaming');
     });
 
     it('should use custom baseUrl for futopt client', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://custom-ws.example.com' });
       const futopt = client.futopt;
       expect(futopt).toBeInstanceOf(WebSocketFutOptClient);
-      // @ts-ignore - accessing private property for testing
-      expect(futopt.options.url).toBe('wss://custom-ws.example.com/v1.1/futopt/streaming');
+      expect(futopt.url).toBe('wss://custom-ws.example.com/v1.1/futopt/streaming');
     });
 
     describe('.connect()', () => {
@@ -469,39 +467,33 @@ describe('WebSocketClient', () => {
     it('should handle baseUrl without trailing slash', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://ws.example.com/marketdata' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
+      expect(stock.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
     });
 
     it('should handle baseUrl with single trailing slash', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://ws.example.com/marketdata/' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
+      expect(stock.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
     });
 
     it('should handle baseUrl with multiple trailing slashes', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://ws.example.com/marketdata///' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
+      expect(stock.url).toBe('wss://ws.example.com/marketdata/v1.0/stock/streaming');
     });
 
     it('should treat a path segment that is not a vX.Y version as part of the prefix', () => {
       const client = new WebSocketClient({ apiKey: 'api-key', baseUrl: 'wss://ws.example.com/api/v2/' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.url).toBe('wss://ws.example.com/api/v2/v1.0/stock/streaming');
+      expect(stock.url).toBe('wss://ws.example.com/api/v2/v1.0/stock/streaming');
 
       const futopt = client.futopt;
-      // @ts-ignore - accessing private property for testing
-      expect(futopt.options.url).toBe('wss://ws.example.com/api/v2/v1.1/futopt/streaming');
+      expect(futopt.url).toBe('wss://ws.example.com/api/v2/v1.1/futopt/streaming');
     });
   });
 
   describe('streaming version', () => {
-    // @ts-ignore - accessing private property for testing
-    const urlOf = (client: WebSocketClient, product: 'stock' | 'futopt') => client[product].options.url;
+    const urlOf = (client: WebSocketClient, product: 'stock' | 'futopt') => client[product].url;
 
     it('should default each product to its latest version', () => {
       const client = new WebSocketClient({ apiKey: 'api-key' });

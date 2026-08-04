@@ -66,16 +66,14 @@ describe('RestClient', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com' });
       const stock = client.stock;
       expect(stock).toBeInstanceOf(RestStockClient);
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.baseUrl).toBe('https://custom-api.example.com/v1.0/stock');
+      expect(stock.baseUrl).toBe('https://custom-api.example.com/v1.0/stock');
     });
 
     it('should use custom baseUrl for futopt client', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://custom-api.example.com' });
       const futopt = client.futopt;
       expect(futopt).toBeInstanceOf(RestFutOptClient);
-      // @ts-ignore - accessing private property for testing
-      expect(futopt.options.baseUrl).toBe('https://custom-api.example.com/v1.0/futopt');
+      expect(futopt.baseUrl).toBe('https://custom-api.example.com/v1.0/futopt');
     });
 
     describe('.intraday', () => {
@@ -931,33 +929,28 @@ describe('RestClient', () => {
     it('should handle baseUrl without trailing slash', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/marketdata' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
+      expect(stock.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
     });
 
     it('should handle baseUrl with single trailing slash', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/marketdata/' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
+      expect(stock.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
     });
 
     it('should handle baseUrl with multiple trailing slashes', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/marketdata///' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
+      expect(stock.baseUrl).toBe('https://api.example.com/marketdata/v1.0/stock');
     });
 
     it('should treat a path segment that is not a vX.Y version as part of the prefix', () => {
       const client = new RestClient({ apiKey: 'api-key', baseUrl: 'https://api.example.com/api/v2/' });
       const stock = client.stock;
-      // @ts-ignore - accessing private property for testing
-      expect(stock.options.baseUrl).toBe('https://api.example.com/api/v2/v1.0/stock');
+      expect(stock.baseUrl).toBe('https://api.example.com/api/v2/v1.0/stock');
 
       const futopt = client.futopt;
-      // @ts-ignore - accessing private property for testing
-      expect(futopt.options.baseUrl).toBe('https://api.example.com/api/v2/v1.0/futopt');
+      expect(futopt.baseUrl).toBe('https://api.example.com/api/v2/v1.0/futopt');
     });
 
     it('should reject a baseUrl carrying its own version segment', () => {

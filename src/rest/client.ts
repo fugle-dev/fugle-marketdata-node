@@ -13,6 +13,17 @@ export interface RestClientOptions {
 export abstract class RestClient {
   constructor(protected readonly options: RestClientOptions) {}
 
+  /**
+   * The prefix every request from this client is built on, fully resolved —
+   * host, version segment and product. Endpoints are appended to it.
+   *
+   * The version segment is chosen by the SDK rather than written by the
+   * caller, so this is the only way to see what a client actually resolved to.
+   */
+  public get baseUrl(): string {
+    return this.options.baseUrl;
+  }
+
   protected request = async (endpoint: string, params?: Record<string, any>) => {
     const url = queryString.stringifyUrl({ url: `${this.options.baseUrl}/${endpoint}`, query: params });
 
