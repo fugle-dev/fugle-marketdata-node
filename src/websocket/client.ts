@@ -32,6 +32,18 @@ export class WebSocketClient extends events.EventEmitter {
     super();
   }
 
+  /**
+   * The endpoint this client connects to, fully resolved — host, version
+   * segment, product and `/streaming`.
+   *
+   * The version segment is chosen by the SDK from the `version` option rather
+   * than written by the caller, so this is the only way to see which version a
+   * client actually ended up on.
+   */
+  public get url(): string {
+    return this.options.url;
+  }
+
   public connect() {
     this.socket = new WebSocket(this.options.url);
     this.socket.onopen = () => this.emit(CONNECT_EVENT);
