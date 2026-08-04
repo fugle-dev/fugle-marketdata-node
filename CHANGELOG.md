@@ -1,5 +1,18 @@
 # Changelog
 
+# [1.5.0-rc.4](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2026-08-04)
+
+
+* fix(client)!: separate baseUrl from the API version ([b8be8c6](https://github.com/fugle-dev/fugle-marketdata-node/commit/b8be8c63975cf90874de991fc436b08018c8f27e))
+
+
+### BREAKING CHANGES
+
+* a baseUrl ending in a version segment is now rejected
+with a TypeError naming the prefix to use instead — pass the host and
+path prefix only. The scalar `version` form is removed; use the
+per-product map, e.g. version: { futopt: 'v1.1' }.
+
 # [1.5.0-rc.3](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2026-07-23)
 
 
