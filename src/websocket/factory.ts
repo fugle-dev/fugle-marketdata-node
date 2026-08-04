@@ -1,9 +1,10 @@
 import { WebSocketClient } from './client';
 import { WebSocketStockClient } from './stock/client';
 import { WebSocketFutOptClient } from './futopt/client';
-import { WebSocketProduct, applyVersionToBaseUrl, resolveVersion } from './version';
+import { WebSocketProduct, VERSION_OPTION_HINT, resolveVersion } from './version';
 import { FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL } from '../constants';
 import { ClientFactory } from '../client-factory';
+import { withVersion } from '../base-url';
 
 export class WebSocketClientFactory extends ClientFactory {
   private readonly clients = new Map<string, WebSocketClient>();
@@ -17,21 +18,15 @@ export class WebSocketClientFactory extends ClientFactory {
   }
 
   /**
-   * A `baseUrl` is only re-versioned when `version` was explicitly supplied.
-   * Left alone otherwise, the version the caller wrote into their URL wins —
-   * which keeps custom and internal deployments (whose paths need not follow
-   * the public versioning at all) working exactly as before.
+   * `baseUrl` picks the host and path prefix; `version` picks the version.
+   * Nothing else: a custom endpoint is written the same way as the public one,
+   * and pointing at a different host never forces the caller to track versions
+   * by hand.
    */
   private resolveBaseUrl(type: WebSocketProduct) {
     const version = resolveVersion(type, this.options.version);
-
-    if (!this.options.baseUrl) {
-      return `${FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL}/${version}`;
-    }
-
-    return this.options.version !== undefined
-      ? applyVersionToBaseUrl(this.options.baseUrl, version)
-      : this.options.baseUrl;
+    const baseUrl = this.options.baseUrl || FUGLE_MARKETDATA_API_WEBSOCKET_BASE_URL;
+    return withVersion(baseUrl, version, VERSION_OPTION_HINT);
   }
 
   private getClient(type: WebSocketProduct) {

@@ -2,6 +2,7 @@ import { RestClient } from './client';
 import { RestStockClient } from './stock/client';
 import { RestFutOptClient } from './futopt/client';
 import { ClientFactory } from '../client-factory';
+import { withVersion } from '../base-url';
 import { FUGLE_MARKETDATA_API_REST_BASE_URL, FUGLE_MARKETDATA_API_VERSION } from '../constants';
 
 export class RestClientFactory extends ClientFactory {
@@ -19,8 +20,15 @@ export class RestClientFactory extends ClientFactory {
     let client = this.clients.get(type);
 
     if (!client) {
-      const baseUrl = this.options.baseUrl || `${FUGLE_MARKETDATA_API_REST_BASE_URL}/${FUGLE_MARKETDATA_API_VERSION}`;
-      const url = `${baseUrl.replace(/\/+$/, '')}/${type}`;
+      // Same rule as streaming: baseUrl is host and path prefix, the SDK owns
+      // the version segment. REST serves one version, so there's no option to
+      // choose it with — but a version written into baseUrl is still rejected
+      // rather than silently doubled.
+      const baseUrl = withVersion(
+        this.options.baseUrl || FUGLE_MARKETDATA_API_REST_BASE_URL,
+        FUGLE_MARKETDATA_API_VERSION,
+      );
+      const url = `${baseUrl}/${type}`;
 
       /* istanbul ignore else */
       if (type === 'stock') {

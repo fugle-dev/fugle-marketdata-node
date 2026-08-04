@@ -6,20 +6,24 @@ export type WebSocketVersion = typeof FUGLE_MARKETDATA_WS_SUPPORTED_VERSIONS[Web
 
 /**
  * Per-product form. Each product is narrowed to the versions it actually
- * serves, so `{ stock: 'v1.1' }` is a compile-time error.
+ * serves, so `{ stock: 'v1.1' }` is a compile-time error. A product left out
+ * of the map — including the empty map — gets that product's latest.
  */
 export type WebSocketVersionMap = {
   [P in WebSocketProduct]?: typeof FUGLE_MARKETDATA_WS_SUPPORTED_VERSIONS[P][number];
 };
 
 /**
- * Either a single version applied to every product, or a per-product map.
+ * The `version` option: always a per-product map.
  *
- * The scalar form can't be checked at compile time — which product it ends up
- * applying to isn't known until a client is taken off the factory — so an
- * unsupported combination throws when that client is created.
+ * A bare version string used to be accepted as "this version for every
+ * product", but which product it applied to wasn't known until a client was
+ * taken off the factory, so an unsupported pairing only surfaced then — and
+ * with the products serving different version sets, the only scalar that never
+ * throws is the one every product happens to share. The map form says the same
+ * thing without the trap.
  */
-export type WebSocketVersionOption = WebSocketVersion | WebSocketVersionMap;
+export type WebSocketVersionOption = WebSocketVersionMap;
 
 const supportedVersions = (product: WebSocketProduct): readonly string[] =>
   FUGLE_MARKETDATA_WS_SUPPORTED_VERSIONS[product];
@@ -45,19 +49,23 @@ const assertSupported = (product: WebSocketProduct, version: string, hint: strin
 /**
  * Resolve the streaming version for a product from the `version` option.
  *
- * Omitted entirely, or omitted for this product in the map form, means the
- * product's latest. Nothing is ever silently clamped: asking for a version a
- * product doesn't serve throws rather than quietly handing back an older one.
+ * Omitted entirely, an empty map, or omitted for this product all mean the same
+ * thing: that product's latest. Nothing is ever silently clamped — asking for a
+ * version a product doesn't serve throws rather than quietly handing back an
+ * older one.
  */
 export const resolveVersion = (product: WebSocketProduct, version?: WebSocketVersionOption): string => {
   if (version === undefined) return latestVersion(product);
 
+  // Guard for JavaScript callers, who don't get the compile-time rejection.
   if (typeof version === 'string') {
     const alternatives = productsSupporting(version);
-    assertSupported(product, version, alternatives.length
-      ? `Use version: { ${alternatives[0]}: '${version}' } to target a single product.`
-      : `No product serves ${version}.`);
-    return version;
+    throw new TypeError(
+      `version must be a per-product map, not the bare string '${version}'. ` +
+      (alternatives.length
+        ? `Use version: { ${alternatives.map(p => `${p}: '${version}'`).join(', ')} }.`
+        : `No product serves ${version}.`)
+    );
   }
 
   const requested = version[product];
@@ -67,19 +75,6 @@ export const resolveVersion = (product: WebSocketProduct, version?: WebSocketVer
   return requested;
 };
 
-const VERSION_SEGMENT = /\/v\d+\.\d+$/;
-
-/**
- * Point an explicitly supplied `baseUrl` at `version` by swapping its trailing
- * version segment (`.../marketdata/v1.0` → `.../marketdata/v1.1`).
- *
- * A baseUrl without a recognizable version segment is left alone — it may be a
- * proxy or an internal deployment that doesn't encode a version in its path,
- * and inventing one would break it.
- */
-export const applyVersionToBaseUrl = (baseUrl: string, version: string): string => {
-  const trimmed = baseUrl.replace(/\/+$/, '');
-  return VERSION_SEGMENT.test(trimmed)
-    ? trimmed.replace(VERSION_SEGMENT, `/${version}`)
-    : trimmed;
-};
+/** Appended to `baseUrl` rejections, pointing at the option that owns the version. */
+export const VERSION_OPTION_HINT =
+  "The version comes from the `version` option, e.g. version: { futopt: 'v1.1' }.";
