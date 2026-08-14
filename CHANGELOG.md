@@ -1,39 +1,12 @@
 # Changelog
 
-# [1.5.0-rc.5](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.4...v1.5.0-rc.5) (2026-08-04)
-
-
-### Features
-
-* **client:** expose the resolved endpoint on rest and websocket clients ([c3edb40](https://github.com/fugle-dev/fugle-marketdata-node/commit/c3edb40257ccb775967b4aaddd49ab6056be036f))
-
-# [1.5.0-rc.4](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2026-08-04)
-
-
-* fix(client)!: separate baseUrl from the API version ([b8be8c6](https://github.com/fugle-dev/fugle-marketdata-node/commit/b8be8c63975cf90874de991fc436b08018c8f27e))
-
-
-### BREAKING CHANGES
-
-* a baseUrl ending in a version segment is now rejected
-with a TypeError naming the prefix to use instead — pass the host and
-path prefix only. The scalar `version` form is removed; use the
-per-product map, e.g. version: { futopt: 'v1.1' }.
-
-# [1.5.0-rc.3](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2026-07-23)
+# [1.5.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.2...v1.5.0) (2026-08-14)
 
 
 ### Features
 
 * **websocket:** add futopt streaming version option, defaulting futopt to v1.1 with trial frames ([3912cf8](https://github.com/fugle-dev/fugle-marketdata-node/commit/3912cf85a2e9c0fa00d0bdb0a6ffe71d65e85c78))
-
-# [1.5.0-rc.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0-rc.1...v1.5.0-rc.2) (2026-07-08)
-
-## [1.5.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.2...v1.5.0-rc.1) (2026-07-03)
-
-
-### Features
-
+* **client:** expose the resolved endpoint on rest and websocket clients ([c3edb40](https://github.com/fugle-dev/fugle-marketdata-node/commit/c3edb40257ccb775967b4aaddd49ab6056be036f))
 * support futopt spread contracts, trial matching & derived quote fields ([51e5926](https://github.com/fugle-dev/fugle-marketdata-node/commit/51e592640ccebae8cd75f96009c5da8ccdd109ce))
 * add stock ownership etfHoldings REST endpoint ([07ec34c](https://github.com/fugle-dev/fugle-marketdata-node/commit/07ec34c111e4bdc64c53cb84b96a87eb1662e729))
 * **websocket:** freshness-based health check with disconnect reason ([43d2725](https://github.com/fugle-dev/fugle-marketdata-node/commit/43d27258a43d3890f24a32fdb49acc1160a77d53))
@@ -41,7 +14,21 @@ per-product map, e.g. version: { futopt: 'v1.1' }.
 
 ### Bug Fixes
 
+* **client:** separate baseUrl from the API version ([b8be8c6](https://github.com/fugle-dev/fugle-marketdata-node/commit/b8be8c63975cf90874de991fc436b08018c8f27e))
 * **websocket:** clamp maxMissedPongs to a minimum of 1 ([4f04707](https://github.com/fugle-dev/fugle-marketdata-node/commit/4f0470739244dd9ad8a582c49addef84d342a995))
+
+
+### Code Refactoring
+
+* **etf:** remove code query param from etf-holdings to match server MR !376 ([7494aa8](https://github.com/fugle-dev/fugle-marketdata-node/commit/7494aa88039bafdc599f1d4d8f2c8128b8da8fe7))
+
+
+### Upgrading from 1.4.x
+
+* **futopt streaming now connects to v1.1 by default.** v1.1 adds trial-matching frames (TAIFEX I022/I082), which arrive on the existing trade and candle channels marked `isTrial: true`. Handlers that do not check that flag will treat trial prices and volumes as real fills. Pass `version: { futopt: 'v1.0' }` to the factory to stay on the previous stream.
+* **`baseUrl` must not include a version segment.** It now carries the host and path prefix only — the version comes from the `version` option, and the SDK appends it. A `baseUrl` ending in `/v1.0` is rejected with a `TypeError` naming the prefix to use instead.
+* **The scalar `version` form is removed.** Use the per-product map, e.g. `version: { futopt: 'v1.1' }`. Products serve different version sets, so a bare string only ever named a version by accident.
+* **Both REST and WebSocket clients expose the endpoint they resolved** — `client.stock.baseUrl` and `client.futopt.url` — so the composed URL can be asserted rather than guessed.
 
 ## [1.4.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.1...v1.4.2) (2026-01-15)
 
