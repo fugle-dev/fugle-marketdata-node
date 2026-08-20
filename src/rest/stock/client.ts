@@ -19,6 +19,9 @@ import { RestStockCorporateActionsCapitalChangesParams, capitalChanges } from '.
 import { RestStockCorporateActionsDividendsParams, dividends } from './corporate-actions/dividends';
 import { RestStockCorporateActionsListingApplicantsParams, listingApplicants } from './corporate-actions/listing-applicants';
 import { RestStockOwnershipEtfHoldingsParams, etfHoldings } from './ownership/etf-holdings';
+import { RestStockOwnershipInstitutionalTradesParams, institutionalTrades } from './ownership/institutional-trades';
+import { RestStockOwnershipDirectorHoldingsParams, directorHoldings } from './ownership/director-holdings';
+import { RestStockOwnershipTdccDistributionParams, tdccDistribution } from './ownership/tdcc-distribution';
 
 export class RestStockClient extends RestClient {
   get intraday() {
@@ -74,6 +77,9 @@ export class RestStockClient extends RestClient {
     const request = this.request;
     return {
       etfHoldings: (params: RestStockOwnershipEtfHoldingsParams) => etfHoldings(request, params),
+      institutionalTrades: (params: RestStockOwnershipInstitutionalTradesParams) => institutionalTrades(request, params),
+      directorHoldings: (params: RestStockOwnershipDirectorHoldingsParams) => directorHoldings(request, params),
+      tdccDistribution: (params: RestStockOwnershipTdccDistributionParams) => tdccDistribution(request, params),
     };
   }
 }
