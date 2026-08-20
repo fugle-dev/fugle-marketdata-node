@@ -312,6 +312,9 @@ describe('RestClient', () => {
         const stock = client.stock as RestStockClient;
         expect(stock.ownership).toBeDefined();
         expect(stock.ownership).toHaveProperty('etfHoldings');
+        expect(stock.ownership).toHaveProperty('institutionalTrades');
+        expect(stock.ownership).toHaveProperty('directorHoldings');
+        expect(stock.ownership).toHaveProperty('tdccDistribution');
       });
 
       describe('.etfHoldings()', () => {
@@ -341,6 +344,102 @@ describe('RestClient', () => {
           await stock.ownership.etfHoldings({ symbol: '0050', from: '2026-05-01', to: '2026-05-21', sort: 'desc' });
           expect(fetch).toBeCalledWith(
             'https://api.fugle.tw/marketdata/v1.0/stock/ownership/etf-holdings/0050?from=2026-05-01&sort=desc&to=2026-05-21',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+
+      describe('.institutionalTrades()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.institutionalTrades({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/institutional-trades/2330',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.institutionalTrades({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/institutional-trades/2330',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.institutionalTrades({ symbol: '2330', from: '2026-07-01', to: '2026-07-31', sort: 'desc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/institutional-trades/2330?from=2026-07-01&sort=desc&to=2026-07-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+
+      describe('.directorHoldings()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.directorHoldings({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/director-holdings/2330',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.directorHoldings({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/director-holdings/2330',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.directorHoldings({ symbol: '2330', from: '2026-01-01', to: '2026-05-31', sort: 'desc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/director-holdings/2330?from=2026-01-01&sort=desc&to=2026-05-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+      });
+
+      describe('.tdccDistribution()', () => {
+        it('should request with api key', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.tdccDistribution({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/tdcc-distribution/2330',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should request with bearer token', async () => {
+          const client = new RestClient({ bearerToken: 'bearer-token' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.tdccDistribution({ symbol: '2330' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/tdcc-distribution/2330',
+            { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const stock = client.stock as RestStockClient;
+          await stock.ownership.tdccDistribution({ symbol: '2330', from: '2026-06-01', to: '2026-07-03', sort: 'desc' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/stock/ownership/tdcc-distribution/2330?from=2026-06-01&sort=desc&to=2026-07-03',
             { headers: { 'X-API-KEY': 'api-key' } },
           );
         });

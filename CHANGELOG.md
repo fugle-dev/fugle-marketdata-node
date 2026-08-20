@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.6.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0...v1.6.0-rc.1) (2026-08-20)
+
+
+### Features
+
+* add stock ownership institutionalTrades, directorHoldings & tdccDistribution REST endpoints ([7366d0d](https://github.com/fugle-dev/fugle-marketdata-node/commit/7366d0d71ea09d52f5a7dcc7693b1a1b4483aa3a))
+
 # [1.5.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.4.2...v1.5.0) (2026-08-14)
 
 
