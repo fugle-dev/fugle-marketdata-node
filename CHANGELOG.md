@@ -1,6 +1,6 @@
 # Changelog
 
-# [1.6.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0...v1.6.0-rc.1) (2026-08-20)
+# [1.6.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0...v1.6.0) (2026-08-20)
 
 
 ### Features
