@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.7.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.6.0...v1.7.0-rc.1) (2026-09-16)
+
+
+### Features
+
+* **futopt:** support historical candles ([d0d5755](https://github.com/fugle-dev/fugle-marketdata-node/commit/d0d57550b50c8e3ea1a2e55cab08ecb9d9d6d7ea))
+
 # [1.6.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.5.0...v1.6.0) (2026-08-20)
 
 
