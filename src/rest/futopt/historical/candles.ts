@@ -1,33 +1,39 @@
 import { RestClientRequest } from "../../client";
 
 export interface RestFutOptHistoricalCandlesParams {
-  symbol: string;
+  product: string;
   contractMonth?: string;
   from?: string;
   to?: string;
   fields?: string;
-  timeframe?: string;
+  timeframe?: '1' | '5' | '10' | '15' | '30' | '60' | 'D' | 'W' | 'M';
+  sort?: 'asc' | 'desc';
+  session?: 'afterhours';
 }
 
 export interface RestFutOptHistoricalCandlesResponse {
-  symbol: string;
-  contractMonth?: string;
+  product: string;
+  contractMonth: string;
   exchange: string;
-  timeframe: string;
+  session: string;
+  timeframe: '1' | '5' | '10' | '15' | '30' | '60' | 'D' | 'W' | 'M';
+  sort: 'asc' | 'desc';
   data: Array<{
     date: string;
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    volume: number;
-    turnover: number;
-    change: number;
+    contractMonth: string;
+    open?: number;
+    high?: number;
+    low?: number;
+    close?: number;
+    volume?: number;
+    average?: number;
+    transaction?: number;
+    change?: number;
   }>;
 }
 
 
 export const candles = (request: RestClientRequest, params: RestFutOptHistoricalCandlesParams) => {
-  const { symbol, ...options } = params;
-  return request(`historical/candles/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptHistoricalCandlesResponse>;
+  const { product, ...options } = params;
+  return request(`historical/candles/${encodeURIComponent(product)}`, options) as Promise<RestFutOptHistoricalCandlesResponse>;
 }
