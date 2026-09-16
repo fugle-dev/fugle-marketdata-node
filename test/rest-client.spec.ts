@@ -981,9 +981,9 @@ describe('RestClient', () => {
         it('should request with api key', async () => {
           const client = new RestClient({ apiKey: 'api-key' });
           const futopt = client.futopt as RestFutOptClient;
-          await futopt.historical.candles({ symbol: 'TXFH4' });
+          await futopt.historical.candles({ product: 'TXF' });
           expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXFH4',
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXF',
             { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
@@ -991,10 +991,39 @@ describe('RestClient', () => {
         it('should request with bearer token', async () => {
           const client = new RestClient({ bearerToken: 'bearer-token' });
           const futopt = client.futopt as RestFutOptClient;
-          await futopt.historical.candles({ symbol: 'TXFH4' });
+          await futopt.historical.candles({ product: 'TXF' });
           expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXFH4',
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXF',
             { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with futures historical query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.candles({
+            product: 'TXF',
+            contractMonth: '1!',
+            from: '2026-01-01',
+            to: '2026-01-31',
+            fields: 'open,high,low,close,volume,average,transaction,change',
+            timeframe: '5',
+            sort: 'asc',
+            session: 'afterhours',
+          });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXF?contractMonth=1%21&fields=open%2Chigh%2Clow%2Cclose%2Cvolume%2Caverage%2Ctransaction%2Cchange&from=2026-01-01&session=afterhours&sort=asc&timeframe=5&to=2026-01-31',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should url-encode product codes', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.candles({ product: 'MXF/A6' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/MXF%2FA6',
+            { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
       });
