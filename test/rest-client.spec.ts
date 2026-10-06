@@ -1032,9 +1032,9 @@ describe('RestClient', () => {
         it('should request with api key', async () => {
           const client = new RestClient({ apiKey: 'api-key' });
           const futopt = client.futopt as RestFutOptClient;
-          await futopt.historical.daily({ symbol: 'TXFH4' });
+          await futopt.historical.daily({ product: 'TXO' });
           expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXFH4',
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXO',
             { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
@@ -1042,10 +1042,35 @@ describe('RestClient', () => {
         it('should request with bearer token', async () => {
           const client = new RestClient({ bearerToken: 'bearer-token' });
           const futopt = client.futopt as RestFutOptClient;
-          await futopt.historical.daily({ symbol: 'TXFH4' });
+          await futopt.historical.daily({ product: 'TXO' });
           expect(fetch).toBeCalledWith(
-            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXFH4',
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXO',
             { headers: { 'Authorization': 'Bearer bearer-token' } },
+          );
+        });
+
+        it('should request with daily query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.daily({
+            product: 'TXF',
+            date: '2026-10-02',
+            contractMonth: '1!',
+            session: 'afterhours',
+          });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXF?contractMonth=1%21&date=2026-10-02&session=afterhours',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
+        it('should accept deprecated symbol as product', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.daily({ symbol: 'TXF' });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/daily/TXF',
+            { headers: { 'X-API-KEY': 'api-key' } },
           );
         });
       });

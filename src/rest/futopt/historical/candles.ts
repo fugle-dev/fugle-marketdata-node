@@ -21,14 +21,14 @@ export interface RestFutOptHistoricalCandlesResponse {
   data: Array<{
     date: string;
     contractMonth: string;
-    open?: number;
-    high?: number;
-    low?: number;
-    close?: number;
+    open?: number | null;
+    high?: number | null;
+    low?: number | null;
+    close?: number | null;
     volume?: number;
     average?: number;
     transaction?: number;
-    change?: number;
+    change?: number | null;
   }>;
 }
 

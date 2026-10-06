@@ -1,32 +1,50 @@
 import { RestClientRequest } from "../../client";
 
-export interface RestFutOptHistoricalDailyParams {
-  symbol: string;
+interface RestFutOptHistoricalDailyBaseParams {
   date?: string;
-  afterhours?: boolean;
+  contractMonth?: string;
+  session?: 'afterhours';
 }
+
+export type RestFutOptHistoricalDailyParams = RestFutOptHistoricalDailyBaseParams & (
+  | { product: string; symbol?: never }
+  /** @deprecated Use `product` instead. */
+  | { symbol: string; product?: never }
+);
 
 export interface RestFutOptHistoricalDailyResponse {
   date: string;
-  symbol: string;
+  product: string;
   exchange: string;
   session: string;
+  /** Present only when requested; resolved to the actual month for continuous aliases like `1!`. */
+  contractMonth?: string;
   data: Array<{
     contractMonth: string;
-    openPrice: number;
-    highPrice: number;
-    lowPrice: number;
-    closePrice: number;
-    change: number;
-    changePercent: number;
+    /** `null` for futures and spreads. */
+    strikePrice: number | null;
+    /** `null` for futures and spreads. */
+    callPut: 'CALL' | 'PUT' | null;
+    exchange: string;
+    /** Price fields are `null` for rows without trades. */
+    openPrice: number | null;
+    highPrice: number | null;
+    lowPrice: number | null;
+    closePrice: number | null;
+    change: number | null;
+    changePercent: number | null;
     volume: number;
-    volumeSpread: number;
-    openInterest: number;
-    settlementPrice: number;
+    /** Spread-to-single volume; set on spread rows only, `null` on other futures rows and absent on options. */
+    volumeSpread?: number | null;
+    /** `null` for spreads and the after-hours session. */
+    openInterest: number | null;
+    /** `null` for spreads and the after-hours session. */
+    settlementPrice: number | null;
   }>;
 }
 
 export const daily = (request: RestClientRequest, params: RestFutOptHistoricalDailyParams) => {
-  const { symbol, ...options } = params;
-  return request(`historical/daily/${encodeURIComponent(symbol)}`, options) as Promise<RestFutOptHistoricalDailyResponse>;
+  const { product, symbol, ...options } = params;
+  const code = (product ?? symbol) as string;
+  return request(`historical/daily/${encodeURIComponent(code)}`, options) as Promise<RestFutOptHistoricalDailyResponse>;
 }
