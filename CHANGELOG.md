@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.8.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.7.0...v1.8.0-rc.1) (2026-10-06)
+
+
+### Features
+
+* **futopt:** historical daily takes product, session and contractMonth; symbol is deprecated ([c6d52d7](https://github.com/fugle-dev/fugle-marketdata-node/commit/c6d52d79df12dd940d5d9e207f368125072a0fa5))
+
 # [1.7.0](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.6.0...v1.7.0) (2026-09-30)
 
 
