@@ -9,6 +9,10 @@ export interface RestFutOptHistoricalCandlesParams {
   timeframe?: '1' | '5' | '10' | '15' | '30' | '60' | 'D' | 'W' | 'M';
   sort?: 'asc' | 'desc';
   session?: 'afterhours';
+  /** Options only; must be given together with `callPut`. */
+  strikePrice?: number;
+  /** Options only; must be given together with `strikePrice`. */
+  callPut?: 'CALL' | 'PUT';
 }
 
 export interface RestFutOptHistoricalCandlesResponse {
@@ -18,6 +22,10 @@ export interface RestFutOptHistoricalCandlesResponse {
   session: string;
   timeframe: '1' | '5' | '10' | '15' | '30' | '60' | 'D' | 'W' | 'M';
   sort: 'asc' | 'desc';
+  /** Echoed for option queries only. */
+  strikePrice?: number;
+  /** Echoed for option queries only. */
+  callPut?: 'CALL' | 'PUT';
   data: Array<{
     date: string;
     contractMonth: string;

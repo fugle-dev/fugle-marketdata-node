@@ -1017,6 +1017,22 @@ describe('RestClient', () => {
           );
         });
 
+        it('should request with options historical query params', async () => {
+          const client = new RestClient({ apiKey: 'api-key' });
+          const futopt = client.futopt as RestFutOptClient;
+          await futopt.historical.candles({
+            product: 'TXO',
+            contractMonth: '202610',
+            strikePrice: 46000,
+            callPut: 'PUT',
+            timeframe: 'D',
+          });
+          expect(fetch).toBeCalledWith(
+            'https://api.fugle.tw/marketdata/v1.0/futopt/historical/candles/TXO?callPut=PUT&contractMonth=202610&strikePrice=46000&timeframe=D',
+            { headers: { 'X-API-KEY': 'api-key' } },
+          );
+        });
+
         it('should url-encode product codes', async () => {
           const client = new RestClient({ apiKey: 'api-key' });
           const futopt = client.futopt as RestFutOptClient;
