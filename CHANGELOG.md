@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.8.0-rc.2](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.8.0-rc.1...v1.8.0-rc.2) (2026-10-07)
+
+
+### Features
+
+* **futopt:** historical candles accepts strikePrice and callPut for options ([4901d09](https://github.com/fugle-dev/fugle-marketdata-node/commit/4901d09242cb66e4729c88e352000d6b6a90a7c4))
+
 # [1.8.0-rc.1](https://github.com/fugle-dev/fugle-marketdata-node/compare/v1.7.0...v1.8.0-rc.1) (2026-10-06)
 
 
